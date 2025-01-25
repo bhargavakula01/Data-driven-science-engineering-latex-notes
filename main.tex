@@ -675,12 +675,12 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \subsubsection*{Randomized Linear Algebra}
 
 \begin{itemize}
-    \item Steps for Randomized Linear Algebra (specific to SVD). This works primarily for \textbf{tall-skinny matrices}, where $n < m$.
+    \item Steps for Randomized Linear Algebra (specific to SVD). This works primarily for \textbf{tall-skinny matrices}, where $n < m$ or number of rows, $n$, are greater than number of columns, $m$.
     \begin{enumerate}
         \item Identify a target rank, where $r < m$. \newline
         \textit{\textbf{Note:} The "rank" is the dimension of the column space.}
 
-        \item Use random projections, $P$, to sample the column space and find a matrix $Q$ that can approximate the column space of $X$, so that $X \approx QQ^*X$
+        \item Use random projections, $P$, to sample the column space and find a matrix $Q$ that can approximate the column space of $X$, so that $X \approx QQ^*X$ \textit{<-- Here one is using column based projection}
 
         \item Project $X$ onto $Q$ subspace ($Y = Q^*X$) and compute the matrix decomposition on $Y$. \newline
         \textbf{Notes on what "Project"/Projection refers to:}
@@ -704,5 +704,13 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \end{itemize}
 
 \subsubsection*{Randomized SVD algorithm}
+
+\begin{itemize}
+    \item Steps:
+    \begin{enumerate}
+        \item Construct a projection matrix, $P$, to sample the column space of matrix $X$, where $X \in R^{n \cdot m}$.
+        
+    \end{enumerate}
+\end{itemize}
 
 \end{document}
