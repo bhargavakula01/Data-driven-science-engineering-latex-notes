@@ -62,7 +62,7 @@
 \begin{itemize}
     \item Definition SVD: Computational-based method of extracting patterns from high-dimensional data sets
     \begin{itemize}
-        \item This is done by extracting "low rank" (number of linearly independent rows or columns) approximations for a matrix and performing an inverse/pseudo-inverse to determine a solution to a system of equations in the form $Ax = b$
+        \item This is done by extracting "low rank" (number of linearly independent columns or dimension of the column space) approximations for a matrix and performing an inverse/pseudo-inverse to determine a solution to a system of equations in the form $Ax = b$
         \item **\textbf{Low-rank approximations of a matrix}** refer to techniques used to approximate a given matrix \( A \) by another matrix \( \tilde{A} \) that has a lower rank than \( A \).
         \item \href{https://www.youtube.com/watch?v=CpD9XlTu3ys}{What is SVD - Youtube Video}
     \end{itemize}
@@ -675,10 +675,34 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \subsubsection*{Randomized Linear Algebra}
 
 \begin{itemize}
-    \item Steps for Randomized Linear Algebra (specific to SVD):
+    \item Steps for Randomized Linear Algebra (specific to SVD). This works primarily for \textbf{tall-skinny matrices}, where $n < m$.
     \begin{enumerate}
-        \item 
+        \item Identify a target rank, where $r < m$. \newline
+        \textit{\textbf{Note:} The "rank" is the dimension of the column space.}
+
+        \item Use random projections, $P$, to sample the column space and find a matrix $Q$ that can approximate the column space of $X$, so that $X \approx QQ^*X$
+
+        \item Project $X$ onto $Q$ subspace ($Y = Q^*X$) and compute the matrix decomposition on $Y$. \newline
+        \textbf{Notes on what "Project"/Projection refers to:}
+        \begin{itemize}
+            \item In projection, one can either project each column of matrix $A$ onto the column space of matrix $B$ or one can project the rows of $A$ onto the row space of matrix $B$.
+            \begin{itemize}
+                \item Column Space Projection Equation ($A$ onto $B$):
+                \begin{equation*}
+                    proj_B(A) = B(B^TB)^{-1}B^TA                
+                \end{equation*}
+                \item Row Space Projection Equation ($A$ onto $B$):
+                \begin{equation*}
+                    proj_B(A) = AB^T(BB^T)^{-1}                
+                \end{equation*}
+            \end{itemize}
+        \end{itemize}
+
+        \item Reconstruct high-dimensional modes $U = QU_Y$ using Q and the modes computed from $Y$. \newline
+        \textit{\textbf{Note:} Mode refers to different dimensions or axes}
     \end{enumerate}
 \end{itemize}
+
+\subsubsection*{Randomized SVD algorithm}
 
 \end{document}
