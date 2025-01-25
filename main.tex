@@ -1,0 +1,684 @@
+%--------------------
+% Packages
+% -------------------
+\documentclass[11.5pt,a4paper]{article}
+
+\usepackage{indentfirst}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{gentium}
+\usepackage{mathptmx} % Use Times Font
+\usepackage{mathtools,amssymb,amsthm}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{mathrsfs}
+\usepackage{hyperref}
+%\def\Laplace#1{\mathscr{L}_{\scriptscriptstyle\mathscr{O}\mathscr{V}\mathscr{E}}\{#1\}}
+
+\usepackage{siunitx}
+
+\usepackage[pdftex]{graphicx} % Required for including pictures
+\usepackage{calc} % To reset the counter in the document after the title page
+\usepackage{enumitem} % Includes lists
+
+\usepackage[a4paper, left=1in, right=1in, top=1in, bottom=1in]{geometry} %margins
+
+\usepackage[all]{nowidow} % Tries to remove widows
+\usepackage[protrusion=true,expansion=true]{microtype} % Improves typography, lhttps://www.overleaf.com/project/65464d4a52b0d7a8ee25fd6coad after fontpackage is selected
+
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+
+% Using \doublespacing in the preamble 
+% changes the text to double-line spacing
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{color} % for the command \textcolor
+\usepackage{soul} % for the command \hl
+
+
+\usepackage[font=small,labelfont=bf, figurename=Fig.]{caption} 
+\renewcommand{\figurename}{Figure}
+
+\newenvironment{conditions}
+  {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
+  {\end{tabular}\par\vspace{\belowdisplayskip}}
+
+\usepackage{verbatim}
+
+%-----------------------
+% Begin document
+%-----------------------
+\begin{document} 
+
+\noindent  Bhargav Akula Ramesh Kumar\\
+\textbf{Date: } Nov 16, 2024\\
+\begin{center}
+    \textbf{Notes on Data-Drive Science and Engineering}
+\end{center}
+
+\section{Singular Value Decomposition (SVD)}
+
+\begin{itemize}
+    \item Definition SVD: Computational-based method of extracting patterns from high-dimensional data sets
+    \begin{itemize}
+        \item This is done by extracting "low rank" (number of linearly independent rows or columns) approximations for a matrix and performing an inverse/pseudo-inverse to determine a solution to a system of equations in the form $Ax = b$
+        \item **\textbf{Low-rank approximations of a matrix}** refer to techniques used to approximate a given matrix \( A \) by another matrix \( \tilde{A} \) that has a lower rank than \( A \).
+        \item \href{https://www.youtube.com/watch?v=CpD9XlTu3ys}{What is SVD - Youtube Video}
+    \end{itemize}
+    \item In other words, it provides a low-dimensional approximation of high-dimensional data through dominant patterns (DATA-DRIVEN APPROACH!)
+\end{itemize}
+
+\subsection*{Overview}
+
+\begin{itemize}
+    \item General Equation for SVD: $X = U\Sigma V^{*}$
+    \begin{itemize}
+        \item for $X \in \mathbb{C}^{n,m}$, $U \in \mathbb{C}^{n,n}$ and $V \in \mathbb{C}^{m,m}$
+        \begin{itemize}
+            \item \textbf{From ChatGPT:} $U$ represent the left singular vectors (the output space that $X$ acts onto) while $V$ represents the right singular vectors (the input space that $X$ acts on). 
+            \item The singular vectors show the variability and information captured by the corresponding singular vectors. In other words, the larger the singular value, the greater impact that a small change in the input singular vector (right singular vector) will have on the output singular vector (left singular vector)
+        \end{itemize}
+        \item \textit{the "*" represents CONJUGATE TRANSPOSE}
+        \begin{itemize}
+            \item \textit{The conjugate transpose is derived by first taking the transpose of the matrix and then determining the complex conjugate for each value in the matrix. For matrices in the real space, the conjugate transpose is the same as the transpose of the matrix.}
+        \end{itemize}
+        \item the eigendecomposition of $A^TA$ allows one to determine $V$
+        \item the eigendecomposition of $AA^T$ allows one to determine $U$
+    \end{itemize}
+    \item How does one numerically compute the SVD?
+    \begin{itemize}
+        \item Can be determined by reducing the matrix $X$ into a bi-diagonal matrix and then iteratively computing the SVD of the bidiagonal matrix
+        \item Another method involves using the QR factorization and getting the upper triangular matrix and using the "Householder transformation" to convert it into a bidiagonal matrix.
+        \begin{itemize}
+            \item QR factorization (or QR decomposition) is a method in linear algebra for decomposing a matrix into a product of two matrices: an orthogonal matrix \( Q \) and an upper triangular matrix \( R \). Specifically, for a given matrix \( A \) (which can be \( m \times n \), with \( m \geq n \)), QR factorization expresses \( A \) as: \[ A = Q R \] Where: 
+            \begin{itemize}
+                \item \( Q \) is an orthogonal matrix, meaning that its columns are orthonormal vectors (\( Q^T Q = I \), where \( I \) is the identity matrix).
+                \item \( R \) is an upper triangular matrix, where all elements below the diagonal are zero.
+            \end{itemize}
+            QR factorization is useful in various applications such as solving linear systems, least squares problems, and eigenvalue problems. The QR factorization can be found using Gram-Schmidt, Householder transformations, or Givens rotations.
+        \end{itemize}
+        \item What is a Bidiagonal Matrix?
+        \begin{itemize}
+            \item A **bidiagonal matrix** is a type of square matrix that has non-zero elements only on the main diagonal and either the superdiagonal (the diagonal just above the main diagonal) or the subdiagonal (the diagonal just below the main diagonal). In other words, a bidiagonal matrix has the following structure:
+            \begin{enumerate}
+                \item The elements on the main diagonal can be any values.
+                \item The elements directly above or below the main diagonal (depending on whether it is an upper or lower bidiagonal matrix) can also be non-zero, but all other elements are zero.
+            \end{enumerate}
+
+            \item There are two types of bidiagonal matrices:
+            \begin{enumerate}
+                \item **Upper bidiagonal matrix**: Non-zero elements appear on the main diagonal and the super-diagonal (above the main diagonal), while all other elements are zero.
+               \[
+               B = \begin{bmatrix}
+               b_{11} & b_{12} & 0 & 0 & \cdots & 0 \\
+               0 & b_{22} & b_{23} & 0 & \cdots & 0 \\
+               0 & 0 & b_{33} & b_{34} & \cdots & 0 \\
+               \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+               0 & 0 & 0 & 0 & \cdots & b_{nn}
+               \end{bmatrix}
+               \]
+               
+                \item **Lower bidiagonal matrix**: Non-zero elements appear on the main diagonal and the subdiagonal (below the main diagonal), with all other elements being zero.
+               \[
+               B = \begin{bmatrix}
+               b_{11} & 0 & 0 & 0 & \cdots & 0 \\
+               b_{21} & b_{22} & 0 & 0 & \cdots & 0 \\
+               0 & b_{32} & b_{33} & 0 & \cdots & 0 \\
+               \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+               0 & 0 & 0 & 0 & \cdots & b_{nn}
+               \end{bmatrix}
+               \]
+            
+            Bidiagonal matrices are important in numerical linear algebra, particularly in the computation of singular value decompositions (SVD), where the bidiagonal form is a key intermediate step.
+            \end{enumerate}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Matrix Approximations}
+
+\begin{itemize}
+    \item The SVD provides a hierarchy of low-rank approximations as the rank-r approximation is determined by keeping the leading r singular value and discarding the rest.
+    \item We can represent the matrix $X$ as a sum of rank 1 matrices (because $\sum$ is a diagonal matrix). Known as a \textit{diadic summation}. Furthermore, the singular values ($\sigma_k$) are arranged in decreasing order ($\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq ... \geq \sigma_m$)
+    \begin{equation*}
+        X = \sum^m_{k=1} \sigma_ku_kv_k^*
+    \end{equation*}
+    \item truncated SVD Basis equation
+    \begin{equation*}
+        \tilde{X} = \tilde{U}\tilde{\sum}\tilde{V}^*
+    \end{equation*}
+    Where,
+    \begin{conditions}
+        \tilde{U} & first $r$ columns of matrix U \\
+        \tilde{V} & first $r$ columns of matrix V \\
+        \tilde{\sum} & $r$x$r$ sub-block of matrix $\sum$
+    \end{conditions}
+\end{itemize}
+
+\subsubsection*{Optimal Approximations and Error Bounds}
+
+\begin{itemize}
+    \item Therom 1.1 (Eckart-Young):
+    \begin{itemize}
+        \item States that the optimal rank-$r$ approximation to $X$ is the rank-$r$ truncation of of $X$ (which was previously stated to be $\tilde{X}$)
+        \begin{itemize}
+            \item As the rank r increases, $\tilde{X}$ will start to approach $X$
+        \end{itemize}
+        \item One can quantify the error of the Eckart-Young theorm:
+        \begin{equation*}
+            \Vert X - \tilde{X} \Vert^2_F = \sum^m_{k=r+1} \sigma^2_k 
+        \end{equation*}
+        \item To calculate relative error, one can use the following equation. This is recommended as error scales with the size \textit{(as larger matrices have more singular values and can result in greater total error)} and magnitude \textit{(if singular values scale linearly with magnitude of $X$ the error scales quadratically with magnitude of $X$ as we are summing the square of singular values)} of $X$.
+        \begin{equation*}
+            \text{Relative Error} = \frac{\Vert X - \tilde{X} \Vert^2_F}{\Vert X \Vert^2_F}
+        \end{equation*}
+    \end{itemize}
+    \item Spectral Norm (2-norm):
+    \begin{equation*}
+        argmin_{\tilde{X}, s.t rank(\tilde{X})=r} \Vert X - \tilde{X} \Vert_2 = \tilde{U}\tilde{\sum}\tilde{V}^*
+    \end{equation*}
+    \begin{itemize}
+        \item The 2-norm of matrix X is induced by the vector 2-norm. This is to determine the maximum possible stretching that matrix X can apply to any unit vector.
+        \begin{equation*}
+            \Vert X \Vert_2 = \text{max}_{v \neq 0}\frac{\Vert Xv \Vert_2}{\Vert v \Vert_2}
+        \end{equation*}
+        \item Difference between euclidean and spectral norms:
+        \begin{itemize}
+            \item \textbf{Euclidean norm (2-norm):}
+            \begin{itemize}
+               \item Applies to vectors
+               \item $\|x\|_2 = \sqrt{\sum_{i=1}^n x_i^2}$
+               \item Measures length/magnitude of a vector
+            \end{itemize}
+            
+            \item \textbf{Spectral norm (induced 2-norm):}
+            \begin{itemize}
+               \item Applies to matrices
+               \item $\|A\|_2 = \max\{\|Ax\|_2 : \|x\|_2 = 1\}$
+               \item Equals the largest singular value $\sigma_1$ of the matrix
+               \item Measures the maximum ``stretching factor'' the matrix applies to any unit vector
+            \end{itemize}
+            
+            \item \textit{The connection is that the spectral norm is induced by the Euclidean norm - it measures how much a matrix can maximally stretch a vector, where both the input and output vectors are measured using the Euclidean norm.}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Example: Image Compression}
+
+% Will return to this 
+
+\subsection*{Mathematical Properties and Approximations}
+
+\noindent \textit{This section will cover the important mathematical properties relating to the SVD}
+
+\subsubsection*{Interpretation as Dominant Correlation}
+
+\begin{itemize}
+    \item The SVD is closely tied to an eigenvalue problem:
+    \begin{itemize}
+        \item This eigenvalue problem involves the correlation matrices $XX^*$ (row-wise correlation matrix) and $X^*X$ (column-wise correlation matrix). 
+        
+        Essentially, the row-wise correlation matrix provides information on how the rows of the matrix are related. This is similar to how a column-wise corelation matrix provides information on how the columns of the matrix are related/are similar to each other. \textit{A correlation matrix can only be determined using a "standardized" (mean-centered and scaled) matrix.}
+
+        The eigenvalues from row-wise correlation matrix shows the maximum variance among rows and the eigenvalues from column-wise correlation matrix shows the maximum variance amongst columns.
+        
+        \item Solving for $XX^*$:
+        \begin{align*}
+            XX^* &= U \begin{bmatrix} \hat{\sum} \\
+                                    0 
+                \end{bmatrix} V^*V \begin{bmatrix}
+                    \hat{\sum} & 0
+                \end{bmatrix} U^* \\
+                &= U \begin{bmatrix}
+                    \hat{\sum}^2 & 0 \\
+                    0 & 0
+                \end{bmatrix} U^*
+        \end{align*}
+        \item Solving for $X^*X$:
+        \begin{align*}
+            X^*X &= V \begin{bmatrix} \hat{\sum} & 0 \end{bmatrix}U^*U \begin{bmatrix} \hat{\sum} \\ 0 \end{bmatrix}V^* \\
+            &= V\hat{\sum}^2V^*
+        \end{align*}
+        \item This analysis shows that each non-zero singular value of X is the positive square root of the eigenvalue of $X^*X$ and $XX^*$ (these two matrices will have the same eigenvalues). Furthermore if $X = X^*$ (aka. the matrix $X$ is self-adjoint) then the singular values will equal the absolute values of the eigenvalues.
+        \item Some information on determining Adjoint of a matrix: \href{https://www.youtube.com/watch?v=wjekhHnzL_U}{\textbf{Youtube: Adjoint Matrix}}\newline
+        \textit{\textbf{An aside}: Adjoint and Adjugate are many time used interchangeably but in actuality the adjoint involves using the conjugate transpose rather than a regular transpose of the cofactor matrix. \newline The above definition, however, isn't related to the definition of a self-adjoint/Hermitian Matrix. A self-adjoint matrix is one where $X = X^*$ or in the real space $X = X^T$.}
+        \item From this analysis one can also tell that $U$ is the eigenvectors of $XX^*$ and $V$ is the eigenvectors of $X^*X$
+        \begin{align*}
+            XX^*U &= U\begin{bmatrix} \hat{\sum}^2 & 0 \\ 0 & 0\end{bmatrix}\\
+            X^*XV &= V\hat{\sum}^2
+        \end{align*}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Method of Snapshots}
+
+\begin{itemize}
+    \item Depending on the problem the state dimension can become very large. The "Method of Snapshots" helps with this problem.
+    \begin{itemize}
+        \item The trick is to perform eigendecomposition on the $X^*X$ matrix. This would enable one to determine the matrices $V$ and $\hat{\sum}$. If there are zero singular values from the matrix $\hat{\sum}$, then we would keep the $r$ non-zero part (which is the matrix $\tilde{\sum}$ from earlier) and the corresponding columns $\tilde{V}$ of $V$. From this, one can approximate the first r columns of U (which is $\tilde{U}$):
+        \begin{equation*}
+            \tilde{U} = X\tilde{V}\tilde{\sum}^{-1}
+        \end{equation*}
+    \end{itemize}
+    \item To summarize, the SVD is intimately connected to the \textbf{spectral properties} of the compact self-adjoint matrices
+        \begin{itemize}
+            \item \textbf{Spectrial properties} of a matrix are the characteristics that relate to its eigenvalues and eigenvectors, which are fundamental in linear algebra and matrix analysis. 
+        \end{itemize}
+\end{itemize}
+
+\subsubsection*{Generalization of the Eigendecomposition}
+
+\begin{itemize}
+    \item The singular value decomposition (SVD) is a generalization of the eigendecomposition of square and defective square matrices. Below is a short explanation of \textbf{defective square matrices}:
+    \begin{itemize}
+        \item A \textbf{Defective square matrix} is a type of square matrix that does not have a complete basis of vectors. A square matrix is classified as defective when the geometric multiplicity of at least one eigenvalue is less than its algebraic multiplicity.
+        \begin{itemize}
+            \item \textbf{Algebraic multiplicity}: The number of times an eigenvalue appear as the root of a matrix's characteristic polynomial
+            \item \textbf{Geometric multiplicity}: The number of linearly independent eigenvectors associated with an eigenvalue (is equivalent to the dimension of the eigenspace for the eigenvalue).
+            \item \textbf{Diagonizability}: A matrix is diagonizable iff the geometric multiplicity of each eigenvalue equals to the algebraic multiplicity and the total number of eigenvectors equals the dimension of the matrix
+            \item \textbf{Summary}: Matrix $A$ is defective if there is an eigenvalue ($\lambda$) in which:
+            \begin{equation*}
+                \text{Geometric Multiplicity of $\lambda$} < \text{Algebraic Multiplicity of $\lambda$}
+            \end{equation*}
+        \end{itemize}
+        \item Eigendecomposition of regular diagonalizable square matrix $X$:
+        \begin{equation*}
+            XV = V\Lambda \Rightarrow X = V\Lambda V^{-1}
+        \end{equation*}
+        \textit{The thing to note is that matrix $V$ is not a unitary matrix, therefore $V^* \neq V^{-1}$}
+        \item Eigendecomposition of a Hermitian Matrix (self-adjoint matrix) where $X = X^*$
+        \begin{equation*}
+            XV = V\Lambda \Rightarrow X = V\Lambda V^{*}
+        \end{equation*}
+        \textit{Here, matrix $V$ is a unitary matrix, therefore $V^{-1} = V^*$}
+        \item The SVD can be written in a similar form to the above representations:
+        \begin{equation*}
+            XV = U\sum \Rightarrow X = U\sum V^*
+        \end{equation*}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Geometric Interpretations}
+
+\begin{itemize}
+    \item When performing SVD, the columns of the matrix $U$ is orthonormal to the columns of $X$ and the columns of matrix $V$ is orthonormal to the rows of $X$.
+    \begin{itemize}
+        \item \textbf{What are orthonormal vectors?:} These are vectors that are orthogonal to each other (dot product = 0), and the vectors have unit mangitude (the magnitude of the vectors are equal to 1).
+    \end{itemize}
+    
+\end{itemize}
+
+\subsubsection*{Invariance of the SVD to Unitary Transformations}
+
+\begin{itemize}
+    \item A interesting, yet useful, property of SVD is when you perform a left or right unitary transformation (an example is discrete fourier transform, or $\mathcal{F}$) to either the $U$ or $V$ matrices, it does not impact the terms in the SVD.
+    \item This invariance is attributed to the fact that unitary transformation only rotate a vector but do not move its inner product (aka. dot product)
+    \begin{itemize}
+        \item \textit{Page 16 in the textbook shows examples of left and right unitary transformations}
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Pseudo-inverse, Least squares, and Regression}
+
+\begin{itemize}
+    \item Basic information on systems of linear equations written in matrix form
+    \begin{equation*}
+        Ax = b
+    \end{equation*}
+    \begin{itemize}
+        \item If $A$ is a square and invertible matrix, then there is a single solution $x$ for every $b$ where $x=A^{-1}b$. If matrix $A$ is rectangular or singular, then you could also end up with infinite solutions, or no solutions. Usually \textbf{under-determined systems} have infinite solutions, while \textbf{over-determined systems} have no solution.
+        \begin{itemize}
+            \item \textit{A singular matrix is a square matrix with a determinant equal to 0 (therefore, it can't be inverted)}
+        \end{itemize}
+    \end{itemize}
+    \item Other information to understand from basic linear algebra:
+    \begin{itemize}
+        \item The \textbf{column space} of matrix $A$ is the \textbf{span} of the columns of the columns of $A$. The \textbf{span} is the number of linearly independent vectors. The \textbf{column space} is also known as the \textbf{range}.\newline
+
+        In SVD, the column space of $A$ in the equation $A = \tilde{U}\tilde{\sum}\tilde{V}^*$ is equal to the column space of $\tilde{U}$
+        
+        \item The \textbf{row space} of $A$ is the span of the rows of $A$ ($\text{row}(A) = \text{col}(A^*)$). \newline
+
+        In SVD, the row space of $A$ (where $A = \tilde{U}\tilde{\sum}\tilde{V}^*$), is equal to the row space of $\tilde{V}^*$ or the column space of $\tilde{V}$.
+
+        \item the \textbf{null space/kernal space} is the orthogonal complement to row space of matrix $A$. The \textbf{null space/kernal space} is the subspace when $Ax=0$. In SVD, this space is provided by $col(\hat{V}^\perp)$.
+
+        \textit{\textbf{Note:} $\hat{V}^\perp$ refers to the orthogonal complement of $V$. the columns of $\hat{V}^\perp$ are orthogonal to the columns of matrix $V$.}
+
+        \item to summarize, if $b \in col(A)$ and $dim(ker(A)) \neq 0$ then there is an infinite number of solutions, $x$. If $b \notin col(A)$ then there are no solutions. \textbf{Essentially, the $dim(ker(A))$ is the NUMBER OF FREE VARIABLES! So if $dim(ker(A))$ is positive then the number of equations is less than the number of unknowns.}
+
+        \item The fundamental subspaces follow the following equations:
+        \begin{align*}
+            col(A) \oplus ker(A^*) = \mathcal{R}^n \\
+            col(A^*) \oplus ker(A) = \mathcal{R}^n
+        \end{align*}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Condition Number}
+
+\begin{itemize}
+    \item What is the \textbf{condition number?}:
+    \begin{itemize}
+        \item represents how sensitive matrix multiplication and matrix inversion are to changes to the input \textit{(useful information in APC - Advanced Process Control - development)}.
+        \item Equation to calculate the condition number:
+        \begin{equation*}
+            \kappa(A) = \frac{\sigma_{max}(A)}{\sigma_{min}(A)}
+        \end{equation*}
+        Where,
+        \begin{conditions}
+            \kappa & Condition number \\
+            \sigma_{max} & Max singular value \\
+            \sigma_{min} & Min singular value \\
+            A & Input matrix
+        \end{conditions}
+        \item in APC development conditions value analysis is used in determining colinearities within the RGA (relative gain array). Near colinearities or colinearities can cause cycling to occur within a MPC (model predictive controller) and thus can cause equipment damage at a plant.
+    \end{itemize}
+    \item How does one illustrate the effect of a large condition value:
+    \begin{itemize}
+        \item If you are apply error margins to the equation $Ax = b$ one gets the following equation:
+        \begin{equation*}
+            A(x + \epsilon_x) = b + \epsilon_b
+        \end{equation*}
+        \item If we assume a worst case scenario where $\epsilon_x$ is aligned with the max singular value, $\sigma_{max}$, and the input, $x$, is aligned with the minimum singular value, $\sigma_{min}$, one will get the following equation:
+        \begin{equation*}
+            A(x + \epsilon_x) = \sigma_{min}x + \sigma_{max}\epsilon_x
+        \end{equation*}
+        Where,
+        \begin{conditions}
+            \sigma_{min}x & $b$ \\
+            \sigma_{max}\epsilon_x & $\epsilon_b$
+        \end{conditions}
+        \item From the above equation, the output signal-to-noise ratio ($\frac{b}{\epsilon_b}$) is equal to $\frac{x}{\epsilon_x} \cdot \frac{\sigma_{min}}{\sigma_{max}}$ 
+    \end{itemize}
+    \item One approach to mitigating a large condition number is to truncate the SVD more aggressively; however, this comes at the cost of decreasing the size of the subspace $\tilde{U}$ which is used to approximate the output. In other words, by performing an aggressive truncation, the approximate result (that one would get from the aggressive truncation of SVD) may lose important information of the higher dimensional system and therefore would not be a good model to represent the higher dimensional system.
+\end{itemize}
+
+\subsubsection*{One-Dimensional Linear Regression}
+
+\begin{itemize}
+    \item Regressions are important to understand how one variable relates to another, if any exists. SVD is a method to solve a linear system of equations (such as $Ax=b$) particularly when $A$ isn't square or full-rank
+    \item Example:
+    \begin{itemize}
+        \item One can use a pseudo inverse to determine the least-squares solution, as shown in the equation below:
+        \begin{align*}
+            b &= ax = \tilde{U}\tilde{\sum}\tilde{V}^*x \\
+            x &= \tilde{V}\tilde{\sum}^{-1}\tilde{U}^*b
+        \end{align*}
+        Where,
+        \begin{conditions}
+            \tilde{\sum} & $\Vert a \Vert_2$ \\
+            \tilde{U} & $\frac{a}{\Vert a \Vert_2}$ \\
+            \tilde{V} & 1
+        \end{conditions}
+        \item Taking the pseudo-inverse, we get the following equation:
+        \begin{equation*}
+            x = \frac{a^*\cdot b}{\Vert a \Vert_2^2}
+        \end{equation*}
+    \end{itemize}
+    \item \textit{Interesting things happen if $a$ is a row vector rather than column vector}
+    \begin{itemize}
+        \item \textbf{What if $a$ is row vector (information provided by ChatGPT!)}: \newline
+
+        If \( a \) is a **row vector** instead of a column vector, the concept of the Singular Value Decomposition (SVD) still applies, but we need to make some adjustments for the specific case where \( M = a \) is a row vector.
+
+Let’s walk through this step by step.
+
+---
+
+### **1. Matrix \( M \) as a Row Vector:**
+
+Now, suppose \( M \) is a \( 1 \times n \) **row vector**:
+\[
+M = \begin{bmatrix} a_1 & a_2 & \dots & a_n \end{bmatrix}.
+\]
+
+This is different from the previous case where \( a \) was a column vector.
+
+---
+
+### **2. SVD for a Row Vector:**
+
+For a row vector \( M \), the SVD is:
+\[
+M = U \Sigma V^T,
+\]
+where:
+- \( U \) is an orthogonal matrix (containing the left singular vectors),
+- \( \Sigma \) is a diagonal matrix (containing the singular values),
+- \( V \) is an orthogonal matrix (containing the right singular vectors).
+
+In the case of a \( 1 \times n \) row vector, \( M \) has a single nonzero singular value, corresponding to the nonzero eigenvalue of \( M^T M \).
+
+---
+
+### **3. Compute \( M^T M \):**
+
+To understand how the SVD works, let’s start by computing \( M^T M \), which is the matrix involved in finding the right singular vectors in \( V \).
+
+- If \( M \) is a row vector of size \( 1 \times n \), then \( M^T \) is an \( n \times 1 \) column vector.
+- So, \( M^T M \) is an \( n \times n \) matrix:
+\[
+M^T M = \begin{bmatrix} a_1 \\ a_2 \\ \dots \\ a_n \end{bmatrix} \begin{bmatrix} a_1 & a_2 & \dots & a_n \end{bmatrix} = \begin{bmatrix} a_1^2 & a_1 a_2 & \dots & a_1 a_n \\ a_2 a_1 & a_2^2 & \dots & a_2 a_n \\ \vdots & \vdots & \ddots & \vdots \\ a_n a_1 & a_n a_2 & \dots & a_n^2 \end{bmatrix}.
+\]
+
+This is an \( n \times n \) **rank-1** matrix, just like the case where \( a \) was a column vector. The eigenvalue decomposition of \( M^T M \) will give us the right singular vectors in \( V \).
+
+---
+
+### **4. Eigenvalue Decomposition of \( M^T M \):**
+
+- Since \( M^T M \) is a rank-1 matrix, it has **one nonzero eigenvalue**, which is:
+  \[
+  \lambda = \|a\|_2^2 = \sum_{i=1}^n a_i^2.
+  \]
+
+- The eigenvector corresponding to this nonzero eigenvalue is the normalized version of the row vector \( a \):
+  \[
+  v_1 = \frac{a^T}{\|a\|_2}.
+  \]
+
+- The other \( n-1 \) eigenvectors of \( M^T M \) are orthogonal to \( v_1 \) and correspond to the zero eigenvalues. These can be any orthonormal vectors in the null space of \( M^T M \).
+
+Thus, \( V \), the matrix of right singular vectors, will have:
+- The first column \( v_1 = \frac{a^T}{\|a\|_2} \),
+- The remaining columns are orthonormal vectors corresponding to the zero eigenvalues.
+
+---
+
+### **5. Compute \( MM^T \):**
+
+Next, we compute \( MM^T \), which will give us the left singular vectors \( U \).
+
+- \( M \) is a \( 1 \times n \) row vector, so \( MM^T \) is a \( 1 \times 1 \) scalar matrix:
+\[
+MM^T = a a^T = \|a\|_2^2.
+\]
+
+This is just a scalar (the squared \( \ell_2 \)-norm of \( a \)).
+
+- The eigenvector corresponding to this eigenvalue is simply \( u_1 = 1 \) (since it's a \( 1 \times 1 \) matrix).
+
+Thus, in this case, the matrix \( U \) is a \( 1 \times 1 \) matrix, which is just the scalar \( 1 \).
+
+---
+
+### **6. Singular Values:**
+
+The singular values are the square roots of the eigenvalues of \( M^T M \) (or \( MM^T \), since they are the same in this case). The nonzero singular value is:
+\[
+\sigma = \|a\|_2.
+\]
+
+Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the diagonal, and all other values will be zero.
+
+---
+
+### **Summary for Row Vector \( a \):**
+
+- \( M = a \) is a row vector \( 1 \times n \).
+- The **right singular vectors** (columns of \( V \)) are:
+  - The first column of \( V \), \( v_1 = \frac{a^T}{\|a\|_2} \), corresponds to the eigenvector of \( M^T M \).
+  - The remaining columns of \( V \) are orthonormal vectors corresponding to the zero eigenvalues of \( M^T M \).
+  
+- The **left singular vector** \( U \) is a \( 1 \times 1 \) matrix (since \( MM^T \) is a scalar), and it is just \( 1 \).
+
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Multi-linear Regression}
+
+\begin{itemize}
+    \item \textit{This section of the textbook provides Matlab examples which are good to do in Julia lang} 
+\end{itemize}
+
+\subsection*{Principle Component Analysis (PCA)}
+
+\begin{itemize}
+    \item What is Principle Component Analysis?
+    \begin{itemize}
+        \item Provides a statistical interpretation of the coordinate system used to represent the high-dimensional correlated data. The coordinate system involves the use of the correlation matrices (the $XX^*$ and $X^*X$ matrices)
+        \begin{itemize}
+            \item \textbf{From ChatGPT:} PCA seeks to transform the data into a coordinate system where the axes are the Principle components which are aligned with directions of maximum variance. The PCs themselves are linear combinations of the original variables that make up the data.
+        \end{itemize}
+        \item The geometry of the coordinate system is determined using \textbf{Principle Components (PCs)} that are orthogonal to each other but have a maximal correlation with the measurements.
+        \item \textbf{From Chat GPT:} PCA transforms this high-dimensional space into a new coordinate system where the axes are the principal components. These new axes are linear combinations of the original features that capture the directions of maximum variance. The PCs provide information on the pattern and structures within the data, many times not directly observable in high dimensional data.
+        \item PCA generally uses SVD to perform its calculations \textit{(Referred as the PCA/SVD technique)}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Computation}
+
+\begin{itemize}
+    \item Process for PCA for experiments:
+    \begin{enumerate}
+        \item A large number of experiments are taken, with each column representing a row within the matrix $X$. \textit{This differs from other types of analysis methods where individual features maybe represented as columns in matrix $X$. This methodology of PCA, as discussed in this section of the notes, is aligned with the literature.}
+        \item Once the data collection has happened, the average row is computed ($\Bar{x}$)
+        \begin{equation*}
+            \Bar{x}_j = \frac{1}{n}\sum_{i=1}^n X_{ij}
+        \end{equation*}
+        \item from the $\Bar{x}$ one can determine the mean matrix frrom the following:
+        \begin{equation*}
+            \Bar{X} = \begin{bmatrix}
+                1 \\
+                \vdots \\
+                1
+            \end{bmatrix} \Bar{x}
+        \end{equation*}
+        \item next, the mean-subtracted matrix, $B$, can be determined which is then used to determine the covariance matrix, $C$:
+        \begin{equation*}
+            B = X - \Bar{X}
+        \end{equation*}
+        \begin{equation*}
+            C = \frac{1}{n-1}B^*B
+        \end{equation*}
+
+        \textit{The reason we use $n-1$ (known as \textbf{Bessel's Correction}) is because the above steps does not account for the variance of $\Bar{X}$ against the true mean.}
+
+        \textit{\textbf{From ChatGPT:} Bessel's correction refers to the adjustment made to the calculation of the sample variance or standard deviation to account for the fact that using the sample mean instead of the population mean underestimates the variability in the data.}
+
+        \item The PCs (principle components) are the eigenvectors of $C$ and they define a change in coordinates.
+        \begin{equation*}
+            CV = VD \Rightarrow C = VDV^* \Rightarrow D = V^*CV
+        \end{equation*}
+
+        Plugging the equation above related $B$ to $C$ and using SVD $B = U\sum V^*$, one can derive the following:
+        \begin{align*}
+            C &= \frac{1}{n-1}B^*B \\
+            &= \frac{1}{n-1}V\left(\sum \right)^2V^* \\
+            D &= \frac{1}{n-1}\left(\sum \right)^2
+        \end{align*}
+
+        One can relate the singular values to the singular values to the eigenvalues using the following equation:
+        \begin{equation*}
+            \lambda_k = \frac{\sigma_k^2}{n-1}
+        \end{equation*}
+
+
+        \textit{\textbf{From ChatGPT:} Principal components are the new variables that are formed as linear combinations of the original variables in a dataset. These components aim to capture the maximum variability in the data, making them the most informative features for analysis and dimensionality reduction.}
+        
+        \begin{itemize}
+            \item Properties of Principle Components \textbf{(From ChatGPT)}:
+            \begin{itemize}
+                \item Orthogonality
+                \item Order of variance -> The principle components are ordered from greatest to least variance.
+                \item PCs are the eigenvectors of the covariance matrix
+                \item the eigenvalues represent the variance for each PC.
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+
+\subsection*{Eigenface Example}
+\textit{This is an example of PCA/SVD... need to return to this}
+
+\subsection*{Truncation and Alignment}
+
+\begin{itemize}
+    \item Determine number of singular values to keep is a debated topic. One approach involves predetermining the amount of variance in the original data (such as 90 or 99\% truncation). Another approach is determining "elbows" or "knees" in the SVD. This is when the singular values transition from representing the important patterns to noise. However, both of these methods have their limitations.
+\end{itemize}
+
+\subsubsection*{Optimal Hard Threshold}
+
+\begin{itemize}
+    \item In matrices that have a low rank and contain "Gaussian white noise", one can determine a \textbf{optimal hard threshold, $\tau$,} for singular value truncation
+    \item How does this work?:
+    \begin{enumerate}
+        \item Start with the assumption that matrix $X$ is made up of a low rank matrix $X_{\text{true}}$ and noise matrix $X_{\text{noise}}$ through the following equation:
+        \begin{equation*}
+            X = X_{\text{true}} + \gamma X_{\text{noise}}
+        \end{equation*}
+        Where,
+        \begin{conditions}
+            \gamma & The magnitude of the Gaussian white noise
+        \end{conditions}
+        \item If $\gamma$ is known, then $\tau$ (the optimal hard threshold) can be determined through the following equations:
+        \begin{itemize}
+            \item If $X \in R^{n \cdot n}$ (matrix $X$ is square):
+            \begin{equation*}
+                \tau = \left( \frac{4}{\sqrt{3}}\right)\sqrt{n}\gamma
+            \end{equation*}
+            \item If $X \in R^{n \cdot m}$ (matrix $X$ is rectangular):
+            \begin{equation*}
+                \tau = \lambda(\beta)\sqrt{n}\gamma
+            \end{equation*}
+            Where,
+            \begin{equation*}
+                \lambda(\beta) = \left( 2(\beta + 1) + \frac{8\beta}{(\beta + 1) + (\beta^2 + 14\beta + 1)^{\frac{1}{2}}} \right)^{\frac{1}{2}}
+            \end{equation*}
+            \begin{itemize}
+                \item \textit{When $m << n$ then $\beta = \frac{m}{n}$}
+                \item \textit{When $n << m$ then $\beta = \frac{n}{m}$}
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+
+\textit{Look into Example Problems here --> Page 36 in textbook}
+
+\subsubsection*{Importance of Data Alignment}
+
+\begin{itemize}
+    \item An important thing to note about SVD is that it is \textbf{fundamentally geometric}. 
+    
+    In other words, rotating, stretching, compressing, or translating the vectors in matrix $X$ (with regards to the equation $X = U\sum V^*$) impacts the matrices $U$, $\sum$, and $V$. Specifically, rotations can impact the left and right singular matrices ($U$ and $V$ respectively), while stretching or compressing (changing the magnitude) the vectors of matrix $X$ can cause changes to $\sum$.
+
+    \item Because SVD is sensitive to the alignment of the data, SVD can't be used on data that hasn't been heavily preprocessed.
+\end{itemize}
+
+\subsection*{Randomized Singular Value Decomposition}
+
+\textbf{Thing to Note: }The use of \textbf{Randomized numerical methods} have the potential to provide accurate matrix decompositions at a fraction of the computational cost. This will be more important in the future as it has been shown that, in most cases, while the rank of the measurement space can grow, the intrinsic rank doesn't increase proportionally.
+
+\subsubsection*{Randomized Linear Algebra}
+
+\begin{itemize}
+    \item Steps for Randomized Linear Algebra:
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+\end{itemize}
+
+\end{document}
