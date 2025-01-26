@@ -94,6 +94,8 @@
             \item QR factorization (or QR decomposition) is a method in linear algebra for decomposing a matrix into a product of two matrices: an orthogonal matrix \( Q \) and an upper triangular matrix \( R \). Specifically, for a given matrix \( A \) (which can be \( m \times n \), with \( m \geq n \)), QR factorization expresses \( A \) as: \[ A = Q R \] Where: 
             \begin{itemize}
                 \item \( Q \) is an orthogonal matrix, meaning that its columns are orthonormal vectors (\( Q^T Q = I \), where \( I \) is the identity matrix).
+
+                \textit{\textbf{Note:} In the context of matrices, orthogonal and orthonormal are often used interchangeably when referring to the columns (or rows) of a matrix, especially in real space. This is because, for a square matrix, if its columns (or rows) are orthogonal, they are often assumed to be of unit length as well, making them orthonormal.}\newline
                 \item \( R \) is an upper triangular matrix, where all elements below the diagonal are zero.
             \end{itemize}
             QR factorization is useful in various applications such as solving linear systems, least squares problems, and eigenvalue problems. The QR factorization can be found using Gram-Schmidt, Householder transformations, or Givens rotations.
@@ -708,8 +710,37 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \begin{itemize}
     \item Steps:
     \begin{enumerate}
-        \item Construct a projection matrix, $P$, to sample the column space of matrix $X$, where $X \in R^{n \cdot m}$.
+        \item Construct a projection matrix, $P \in R^{m\cdot r}$, to sample the column space of matrix $X$, where $X \in R^{n \cdot m}$.
+        \begin{equation*}
+            Z = XP
+        \end{equation*}
+
+        \textit{\textbf{Note:} For low rank matrices and where $r << m$, $Z$ might be smaller than $X$. This is because a random projection matrix might not capture the important components from $X$ and as a result, $Z$ approximates the column vectors of $X$ with high probability. This can be helpful in determining a $QR$ decomposition for $Z$ to find the orthonormal basis for $X$.}
+
+        \item With a low rank basis $Q$, one can project $X$ into smaller spaces.
+        \begin{equation*}
+            Y = Q^*X
+        \end{equation*}
+
+        \textit{\textbf{Note:} It stands to reason that $X \approx QY$ especially in cases when $\sigma_k$ is decaying. This is because at lower singular values represent noise in the system and a result, a small change in the input vector (right singular vector) does not create a significant change in the left singular vector.}
+
+        Once one determines $Y$, one can perform SVD on $Y$:
+        \begin{equation*}
+            Y = U_Y\sum V^*
+        \end{equation*}
         
+        \item Using $U_Y$ and $Q$, one can determine the high-dimensional left singular vectors, $U$.
+        \begin{equation*}
+            U = QU_Y    
+        \end{equation*}
+
+        \item Figure of Process:
+        \begin{figure}[hbt!]
+            \centering
+            \includegraphics[width=0.5\linewidth]{Figures/Randomized_SVD_fig.png}
+            \caption{Process of Randomized SVD using the Halko, Martinsson, and Tropp algorithm}
+            \label{fig:Randomized-SVD}
+        \end{figure}
     \end{enumerate}
 \end{itemize}
 
