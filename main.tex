@@ -556,7 +556,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \begin{itemize}
     \item Process for PCA for experiments:
     \begin{enumerate}
-        \item A large number of experiments are taken, with each column representing a row within the matrix $X$. \textit{This differs from other types of analysis methods where individual features maybe represented as columns in matrix $X$. This methodology of PCA, as discussed in this section of the notes, is aligned with the literature.}
+        \item A large number of experiments are taken, with each measurement vector representing a row within the matrix $X$. \textit{This differs from other types of analysis methods where individual features maybe represented as columns in matrix $X$. This methodology of PCA, as discussed in this section of the notes, is aligned with the literature.}
         \item Once the data collection has happened, the average row is computed ($\Bar{x}$)
         \begin{equation*}
             \Bar{x}_j = \frac{1}{n}\sum_{i=1}^n X_{ij}
@@ -577,7 +577,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             C = \frac{1}{n-1}B^*B
         \end{equation*}
 
-        \textit{The reason we use $n-1$ (known as \textbf{Bessel's Correction}) is because the above steps does not account for the variance of $\Bar{X}$ against the true mean.}
+        \textit{The reason we use $n-1$ (known as \textbf{Bessel's Correction}) is because the above steps to determine the sample variance does not account for the variance of $\Bar{X}$ (sample mean) against the true mean.}
 
         \textit{\textbf{From ChatGPT:} Bessel's correction refers to the adjustment made to the calculation of the sample variance or standard deviation to account for the fact that using the sample mean instead of the population mean underestimates the variability in the data.}
 
@@ -722,7 +722,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             Y = Q^*X
         \end{equation*}
 
-        \textit{\textbf{Note:} It stands to reason that $X \approx QY$ especially in cases when $\sigma_k$ is decaying. This is because at lower singular values represent noise in the system and a result, a small change in the input vector (right singular vector) does not create a significant change in the left singular vector.}
+        \textit{\textbf{Note:} It stands to reason that $X \approx QY$ especially in cases when $\sigma_k$ is decaying (when $k > r$). This is because at lower singular values represent noise in the system and a result, a small change in the input vector (right singular vector) does not create a significant change in the left singular vector.}
 
         Once one determines $Y$, one can perform SVD on $Y$:
         \begin{equation*}
@@ -733,14 +733,139 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \begin{equation*}
             U = QU_Y    
         \end{equation*}
+    \end{enumerate}
+    \item Figure of Randomized SVD algorithm:
+    \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=0.5\linewidth]{Figures/Randomized_SVD_fig.png}
+        \caption{Process of Randomized SVD using the Halko, Martinsson, and Tropp algorithm}
+        \label{fig:Randomized-SVD}
+    \end{figure}
 
-        \item Figure of Process:
-        \begin{figure}[hbt!]
-            \centering
-            \includegraphics[width=0.5\linewidth]{Figures/Randomized_SVD_fig.png}
-            \caption{Process of Randomized SVD using the Halko, Martinsson, and Tropp algorithm}
-            \label{fig:Randomized-SVD}
-        \end{figure}
+    \item \textit{\textbf{Note:} A \textbf{randomized projection matrix} is a matrix, \( P \), with random entries (often drawn from a Gaussian distribution) that is used to project a large matrix, \( X \), onto a lower-dimensional subspace. The goal is to capture the most significant features of \( X \), such as its dominant singular values and vectors, with fewer computational resources. By multiplying \( X \) with \( P \), we obtain a smaller matrix, \( Y = XP \), that retains the essential structure of \( X \), enabling efficient approximation of its singular value decomposition (SVD).}    
+    
+    \item \textit{\textbf{Note:}\href{https://tropp.caltech.edu/slides/Tro21-RandSVD-slides.pdf}{Link to more relevant information on SVD}}
+\end{itemize}
+
+\subsubsection*{Oversampling}
+
+\begin{itemize}
+    \item In case (which is most of the time) when $X$ is not a low-rank matrix, there will be non-zero singular values, $\sigma_k$ when $k > r$. One can increase the columns of the randomized projection matrix ($P$) to reduce variance in the singular values, a method called \textbf{oversampling}. 
+    \item This method is important so that matrix $Y$ can hold the dominant components (components with the most information) from the original matrix.
+\end{itemize}
+
+\subsubsection*{Power Iterations}
+
+\begin{itemize}
+    \item Another challenge with the SVD is when there is a slow decay in the singular values. In this situation, one can utilize \textbf{q power iterations} to create a new matrix, $X^{(q)}$, that has more rapid singular value decay.
+    \begin{equation*}
+        X^{(q)} = (XX^*)^qX
+    \end{equation*}
+    \item The Downside is that the power iterations are expensive as it requires $q$ passes at matrix $X$
+\end{itemize}
+
+\subsubsection*{Guaranteed Error Bounds}
+
+\begin{itemize}
+    \item In a deterministic algorithm, one can define the error through the following equation:
+    \begin{equation*}
+        \Vert X - QY \Vert_2 \geq \sigma_{r+1}(X)
+    \end{equation*}
+    \item In a randomized algorithm, one can determine the \textbf{expected error}:
+    \begin{equation*}
+        \mathcal{E}(\Vert X - QY \Vert_2) \leq \left( 1 + \sqrt{\frac{r}{p-1}} + \frac{e\sqrt{r+p}}{p}\sqrt{m-r} \right)^{1/(2q+1)}\sigma_{k+1}(X)
+    \end{equation*}
+    Where,
+    \begin{conditions}
+        e & Euler number
+    \end{conditions}
+\end{itemize}
+
+\subsubsection*{Choice of Random Matrix $P$}
+
+\begin{itemize}
+    \item What are some choices for the random matrix, $P$:
+    \begin{enumerate}
+        \item \textbf{Gaussian Random Projections} are used frequently due to favorable mathematical properties and the richness of information extracted. However, Gaussian Random Projections are hard to generate, store, and compute. \textbf{Uniform random matrices} are also used frequently and have similar limitations.
+        \item \textbf{Structured Random Projections} can also provide efficient sketches and bring down computational costs to $\mathcal{O}(nm\text{log}(r))$
+        \item Another example are \textbf{Rademacher matrices} where entries can be $+1$ or $-1$ of equal probability.
+        \item An extreme option is randomly choosing columns of $X$ for the sketch $Z$. This is risky as the important columns of $X$ could be localized to a particular region.
+    \end{enumerate}
+\end{itemize}
+
+\textit{Look into Randomized SVD example here --> Page 44}
+
+\subsection*{Tensor Decomposition and N-Way Data Arrays}
+
+\begin{itemize}
+    \item The purpose of N-ways arrays or tensors is to preserve the data structures and types in their own independent directions without forcing a data flattening process.
+    \item The development of data tensors requires one to revisit tensor addition, multiplication, and inner products
+    \begin{enumerate}
+        \item First we denote the $r^{th}$ column of matrix $A$ as $a_r$.
+        \item Say that we have two matrices: $A \in R^{I\times K}$ and $B \in R^{J\times K}$. Their \textbf{Khatri-Rao product} is denoted by $A 
+        \odot B$
+        \begin{itemize}
+            \item The \textbf{Khatri-Rao product} is a column-wise \textbf{Kronecker product} of 2 matrices with the same number of columns. This is represented by the following equation:
+            \begin{equation*}
+                A \odot B = (a_1 \otimes b_1 \cdots a_K \otimes b_K)
+            \end{equation*}
+            \textit{Where the subscript number in the above formula represents the column number.}
+            \item The \textbf{Kronecker product} is a tensor product on two matrices to produce a larger matrix. It is denoted by the symbol $\otimes$.
+
+            Mathematically, for \( A = [a_{ij}] \) and \( B = [b_{kl}] \), the Kronecker product is:
+
+            \[
+            A \otimes B = 
+            \begin{bmatrix}
+            a_{11}B & a_{12}B & \dots & a_{1n}B \\
+            a_{21}B & a_{22}B & \dots & a_{2n}B \\
+            \vdots & \vdots & \ddots & \vdots \\
+            a_{m1}B & a_{m2}B & \dots & a_{mn}B
+            \end{bmatrix}
+            \]
+            
+            \textbf{Example:}
+            
+            Let
+            \[
+            A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}, \quad B = \begin{bmatrix} 0 & 5 \\ 6 & 7 \end{bmatrix}
+            \]
+            The Kronecker product \( A \otimes B \) is calculated as:
+            
+            \[
+            A \otimes B = \begin{bmatrix}
+            1 \cdot B & 2 \cdot B \\
+            3 \cdot B & 4 \cdot B
+            \end{bmatrix}
+            = \begin{bmatrix}
+            \begin{bmatrix} 0 & 5 \\ 6 & 7 \end{bmatrix} & \begin{bmatrix} 0 & 10 \\ 12 & 14 \end{bmatrix} \\
+            \begin{bmatrix} 0 & 5 \\ 6 & 7 \end{bmatrix} \cdot 3 & \begin{bmatrix} 0 & 5 \\ 6 & 7 \end{bmatrix} \cdot 4
+            \end{bmatrix}
+            = \begin{bmatrix}
+            0 & 5 & 0 & 10 \\
+            6 & 7 & 12 & 14 \\
+            0 & 15 & 0 & 20 \\
+            18 & 21 & 24 & 28
+            \end{bmatrix}
+            \]
+        \end{itemize}
+        
+        \item The inner product of two N-way tensors (for example, $\mathcal{A}$ and $\mathcal{B}$) is shown below
+        \begin{equation*}
+            \left < \mathcal{A}, \mathcal{B}\right> = \sum_i a_ib_i
+        \end{equation*}
+        Where: $\mathcal{A}$ is of size $I_1\times I_2 \times \cdots \times I_N$ and $i = (i_1, i_2, \cdots, i_n)$
+
+        \item The Frobenius norm of a tensor A (denoted as $\Vert \mathcal{A} \Vert_F$) is the square root of the inner product.
+        \begin{equation*}
+            \Vert \mathcal{A} \Vert_F = \sqrt{\left< \mathcal{A}, \mathcal{A}\right>}
+        \end{equation*}
+
+        \item The mode-n matricization (or unfolding of tensor $\mathcal{A}$) is denoted by $mA_{(n)}$
+    \end{enumerate}
+    \item How to formulate a N-ways data array?:
+    \begin{enumerate}
+        \item 
     \end{enumerate}
 \end{itemize}
 
