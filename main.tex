@@ -315,7 +315,7 @@
 \subsubsection*{Invariance of the SVD to Unitary Transformations}
 
 \begin{itemize}
-    \item A interesting, yet useful, property of SVD is when you perform a left or right unitary transformation (an example is discrete fourier transform, or $\mathcal{F}$) to either the $U$ or $V$ matrices, it does not impact the terms in the SVD.
+    \item A interesting, yet useful, property of SVD is when you perform a left or right unitary transformation (an example is discrete fourier transform, or $\mathbb{F}$) to either the $U$ or $V$ matrices, it does not impact the terms in the SVD.
     \item This invariance is attributed to the fact that unitary transformation only rotate a vector but do not move its inner product (aka. dot product)
     \begin{itemize}
         \item \textit{Page 16 in the textbook shows examples of left and right unitary transformations}
@@ -353,8 +353,8 @@
 
         \item The fundamental subspaces follow the following equations:
         \begin{align*}
-            col(A) \oplus ker(A^*) = \mathcal{R}^n \\
-            col(A^*) \oplus ker(A) = \mathcal{R}^n
+            col(A) \oplus ker(A^*) = \mathbb{R}^n \\
+            col(A^*) \oplus ker(A) = \mathbb{R}^n
         \end{align*}
     \end{itemize}
 \end{itemize}
@@ -773,7 +773,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \end{equation*}
     \item In a randomized algorithm, one can determine the \textbf{expected error}:
     \begin{equation*}
-        \mathcal{E}(\Vert X - QY \Vert_2) \leq \left( 1 + \sqrt{\frac{r}{p-1}} + \frac{e\sqrt{r+p}}{p}\sqrt{m-r} \right)^{1/(2q+1)}\sigma_{k+1}(X)
+        \mathbb{E}(\Vert X - QY \Vert_2) \leq \left( 1 + \sqrt{\frac{r}{p-1}} + \frac{e\sqrt{r+p}}{p}\sqrt{m-r} \right)^{1/(2q+1)}\sigma_{k+1}(X)
     \end{equation*}
     Where,
     \begin{conditions}
@@ -787,7 +787,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \item What are some choices for the random matrix, $P$:
     \begin{enumerate}
         \item \textbf{Gaussian Random Projections} are used frequently due to favorable mathematical properties and the richness of information extracted. However, Gaussian Random Projections are hard to generate, store, and compute. \textbf{Uniform random matrices} are also used frequently and have similar limitations.
-        \item \textbf{Structured Random Projections} can also provide efficient sketches and bring down computational costs to $\mathcal{O}(nm\text{log}(r))$
+        \item \textbf{Structured Random Projections} can also provide efficient sketches and bring down computational costs to $\mathbb{O}(nm\text{log}(r))$
         \item Another example are \textbf{Rademacher matrices} where entries can be $+1$ or $-1$ of equal probability.
         \item An extreme option is randomly choosing columns of $X$ for the sketch $Z$. This is risky as the important columns of $X$ could be localized to a particular region.
     \end{enumerate}
@@ -802,7 +802,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \item The development of data tensors requires one to revisit tensor addition, multiplication, and inner products
     \begin{enumerate}
         \item First we denote the $r^{th}$ column of matrix $A$ as $a_r$.
-        \item Say that we have two matrices: $A \in R^{I\times K}$ and $B \in R^{J\times K}$. Their \textbf{Khatri-Rao product} is denoted by $A 
+        \item Say that we have two matrices: $A \in \mathbb{R}^{\mathbb{I}\times \mathbb{K}}$ and $B \in \mathbb{R}^{\mathbb{J}\times \mathbb{K}}$. Their \textbf{Khatri-Rao product} is denoted by $A 
         \odot B$
         \begin{itemize}
             \item The \textbf{Khatri-Rao product} is a column-wise \textbf{Kronecker product} of 2 matrices with the same number of columns. This is represented by the following equation:
@@ -850,23 +850,66 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             \]
         \end{itemize}
         
-        \item The inner product of two N-way tensors (for example, $\mathcal{A}$ and $\mathcal{B}$) is shown below
+        \item The inner product of two N-way tensors (for example, $\mathbb{A}$ and $\mathbb{B}$) is shown below
         \begin{equation*}
-            \left < \mathcal{A}, \mathcal{B}\right> = \sum_i a_ib_i
+            \left < \mathbb{A}, \mathbb{B}\right> = \sum_i a_ib_i
         \end{equation*}
-        Where: $\mathcal{A}$ is of size $I_1\times I_2 \times \cdots \times I_N$ and $i = (i_1, i_2, \cdots, i_n)$
+        Where: $\mathbb{A}$ is of size $I_1\times I_2 \times \cdots \times I_N$ and $i = (i_1, i_2, \cdots, i_n)$
 
-        \item The Frobenius norm of a tensor A (denoted as $\Vert \mathcal{A} \Vert_F$) is the square root of the inner product.
+        \item The Frobenius norm of a tensor A (denoted as $\Vert \mathbb{A} \Vert_F$) is the square root of the inner product (aka. dot product).
         \begin{equation*}
-            \Vert \mathcal{A} \Vert_F = \sqrt{\left< \mathcal{A}, \mathcal{A}\right>}
+            \Vert \mathbb{A} \Vert_F = \sqrt{\left< \mathbb{A}, \mathbb{A}\right>}
         \end{equation*}
 
-        \item The mode-n matricization (or unfolding of tensor $\mathcal{A}$) is denoted by $mA_{(n)}$
+        \textit{Below are some more information about inner and outer products:}
+        \begin{itemize}
+            \item inner product (aka. dot product) is represented by the following equation:
+            \begin{equation*}
+                a \cdot b = a^Tb
+            \end{equation*}
+            \item the outer product is represented by the following equation:
+            \begin{equation*}
+                a\cdot b = ab^T
+            \end{equation*}
+            
+            where, $a = \left[a_1, a_2, a_3, \cdots, a_n\right]$ and $b = \left[ b_1, b_2, b_3, \cdots, b_n\right] $
+        \end{itemize}
+
+        \item The mode-n matricization (or unfolding of tensor $\mathbb{A}$) is denoted by $mA_{(n)}$
     \end{enumerate}
     \item How to formulate a N-ways data array?:
     \begin{enumerate}
-        \item 
+        \item If we are representing $\mathbb{M}$ as a tensor of size $I_1 \times I_2 \times \cdots \times I_N$, we can develop a \textbf{R-component CANDECOMP/PARAFAC (CP) factor model}
+        \begin{itemize}
+            \item the meaning of $I_1 \times I_2 \times \cdots \times I_N$ is to represent the number of modes (aka. dimensions) of the tensor
+            \item the \textbf{CANDECOMP/PARAFAC (CP)} decomposition is a way to express a tensor as a sum of rank-one tensors.
+            \begin{equation*}
+                \mathcal{X} = \sum^R_{r=1}  a_r \circ b_r \circ c_r
+            \end{equation*}
+            Where $A \in \mathbb{R}^{I_1\times R}$, $B \in \mathbb{R}^{I_2\times R}$, and $C \in \mathbb{R}^{I_3\times R}$
+
+            The R-component in CP decomposition refers to the decomposition of the tensor to the R$^{\text{th}}$ factor matrix.
+        \end{itemize}
+        \item the overall equation is the following:
+        \begin{equation*}
+            \mathbb{M} = \sum^R_{r=1} \lambda_r ma_r^{(1)} \circ ma_r^{(2)} \circ \cdots \circ ma_r^{(N)}
+        \end{equation*}
+        where 
+        \begin{conditions}
+            \circ & outer product \\
+            ma_r^{(n)} & rth column of the factor matrix of $mA^{(n)}$ of size $I_n \times R$ \\
+            \lambda_r & The weight, where $\lambda = (\lambda_1, \lambda_2, \cdots, \lambda_R)^T$ (assuming column normalized to Euclidean length).
+        \end{conditions}
     \end{enumerate}
+    \item Example:
+        \begin{figure}[hbt!]
+            \centering
+            \includegraphics[width=0.5\linewidth]{Figures/Compare_SVD_to_tensor_decomp.png}
+            \caption{Comparison of SVD to Tensor Decomposition of N-ways Data Array}
+            \label{fig:Compare_SVD_to_Tensor_Decomp}
+        \end{figure}
 \end{itemize}
+
+\section{Fourier \& Wavelet Transforms}
 
 \end{document}
