@@ -201,6 +201,13 @@
                \item Equals the largest singular value $\sigma_1$ of the matrix
                \item Measures the maximum ``stretching factor'' the matrix applies to any unit vector
             \end{itemize}
+
+            \item \textbf{Frobenius Norm (2-norm}
+            \begin{itemize}
+                \item Applies to matrices
+                \item \|A\|_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} |A_{ij}|^2}
+                \item Basically the Euclidean 2-norm except for matrices.
+            \end{itemize}
             
             \item \textit{The connection is that the spectral norm is induced by the Euclidean norm - it measures how much a matrix can maximally stretch a vector, where both the input and output vectors are measured using the Euclidean norm.}
         \end{itemize}
@@ -911,5 +918,43 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \end{itemize}
 
 \section{Fourier \& Wavelet Transforms}
+
+\subsection*{Fourier Series and Fourier Transforms}
+
+\begin{itemize}
+    \item Fourier Transform decomposing PDEs are analogous to SVD decomposing high-dimensional matrices
+    \item The Fourier transform and Fourier series are closely related to the geometry of \textbf{hilbert spaces} (infinite-dimensional function spaces), which generalize vector spaces to include functions that contain infinitely many degrees of freedom (aka. \textbf{function spaces)}.
+\end{itemize}
+
+\subsubsection*{Inner products of functions and vectors}
+
+\begin{itemize}
+    \item How to determine the Hermitian inner product of the functions $f(x)$ and $g(x)$
+    \begin{equation*}
+        \left<f(x), g(x) \right> = \int_a^b f(x)\Bar{g}(x)dx
+    \end{equation*}
+    where $\Bar{g}(x)$ is the complex conjugate of $g(x)$
+    
+    \item because the magnitude of the inner product increases as number of data points to the vector increases, a normalization parameter $\frac{b-a}{n-1}$ is added:
+    \begin{equation*}
+        \frac{b-a}{n-1}\left<f(x), g(x) \right> = \sum_{k=1}^n f(x_k)\Bar{g}(x_k)\Delta x
+    \end{equation*}
+    where $b = x_n$ and $a = x_1$. The above equation is also a Reimann approximation of the continuous functions. As $\Delta x \rightarrow \infty$ the approximate will equal the exact result.
+
+    \item One can also determine the norm of a function (ex provided is the 2-norm):
+    \begin{equation*}
+        \Vert f \Vert_2 = \sqrt{\left<f,f\right>} = \left(\int_a^b f(x)\Bar{f}(x)dx\right)^{1/2}
+    \end{equation*}
+
+    \item The set of all functions with bounded norm defines the set of \textbf{square integrable functions} also known as the \textbf{Lebesque integrable functions}
+
+    \item Similarly to finite-dimensional vector spaces, the inner product can be used to project a function into a new coordinate system using orthogonal functions. The \textbf{Fourier series} is an example of a \textbf{projection} of function $f$ onto an orthogonal set of sine and cosine.
+\end{itemize}
+
+\subsubsection*{Fourier Series}
+
+\begin{itemize}
+    \item The Core principle of the Fourier series is that if $f(x)$ is periodic and piecewise smooth, then it can be written as a series of sine and cosine functions with increasing frequency.
+\end{itemize}
 
 \end{document}
