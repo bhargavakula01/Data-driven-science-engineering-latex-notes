@@ -190,7 +190,7 @@
             \item \textbf{Euclidean norm (2-norm):}
             \begin{itemize}
                \item Applies to vectors
-               \item $\|x\|_2 = \sqrt{\sum_{i=1}^n x_i^2}$
+               \item $\|x\|_2 = \sqrt{\sum_{i=1}^n |x_i|^2}$
                \item Measures length/magnitude of a vector
             \end{itemize}
             
@@ -202,11 +202,11 @@
                \item Measures the maximum ``stretching factor'' the matrix applies to any unit vector
             \end{itemize}
 
-            \item \textbf{Frobenius Norm (2-norm}
+            \item \textbf{Frobenius Norm (2-norm})
             \begin{itemize}
                 \item Applies to matrices
                 \item $\|A\|_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} |A_{ij}|^2}$
-                \item Basically the Euclidean 2-norm except for matrices.
+                \item Basically, the Euclidean 2-norm except for matrices.
             \end{itemize}
             
             \item \textit{The connection is that the spectral norm is induced by the Euclidean norm - it measures how much a matrix can maximally stretch a vector, where both the input and output vectors are measured using the Euclidean norm.}
@@ -961,6 +961,9 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \begin{itemize}
     \item Fourier Transform decomposing PDEs are analogous to SVD decomposing high-dimensional matrices
     \item The Fourier transform and Fourier series are closely related to the geometry of \textbf{hilbert spaces} (infinite-dimensional function spaces), which generalize vector spaces to include functions that contain infinitely many degrees of freedom (aka. \textbf{function spaces)}.
+    \begin{itemize}
+        \item \textbf{Note:} A \textbf{Hilbert space} is a complete vector space that is equipped with an inner product. Hilbert spaces were originally used to study finite-dimensional vector spaces but have been expanded to study function spaces, essentially vector spaces of infinite dimension.
+    \end{itemize}
 \end{itemize}
 
 \subsubsection*{Inner products of functions and vectors}
@@ -980,10 +983,22 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 
     \item One can also determine the norm of a function (ex provided is the 2-norm):
     \begin{equation*}
-        \Vert f \Vert_2 = \sqrt{\left<f,f\right>} = \left(\int_a^b f(x)\Bar{f}(x)dx\right)^{1/2}
+        \Vert f \Vert_2 = \sqrt{\left<f,f\right>} = \left(\int_a^b f(x)\Bar{f}(x)dx\right)^{1/2} =\left(\int_a^b |f(x)|^2dx\right)^{1/2} 
     \end{equation*}
 
-    \item The set of all functions with bounded norm defines the set of \textbf{square integrable functions} also known as the \textbf{Lebesque integrable functions}
+    A generalization of the above equation for $L^{p}$-norms:
+    \begin{equation*}
+        \Vert f \Vert_p = \left(\int_a^b |f(x)|^p dx\right)^{1/p} = \left(\int_a^b (f(x)\Bar{f}(x))^{p/2} dx\right)^{1/p}
+    \end{equation*}
+
+    \item The set of all functions with bounded norm defines the set of \textbf{square integrable functions}($L^2$) also known as the \textbf{Lebesque integrable functions}
+    \begin{itemize}
+        \item A bounded norm is where the norm is less than infinity:
+        \begin{equation*}
+            \Vert f \Vert_2 < \infty
+        \end{equation*}
+        We can also state that square-integrable functions are functions where the integral of the square is finite. In other words, the function does not \textbf{grow too quickly} as it approaches infinity.
+    \end{itemize}
 
     \item Similarly to finite-dimensional vector spaces, the inner product can be used to project a function into a new coordinate system using orthogonal functions. The \textbf{Fourier series} is an example of a \textbf{projection} of function $f$ onto an orthogonal set of sine and cosine.
 \end{itemize}
@@ -992,6 +1007,27 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 
 \begin{itemize}
     \item The core principle of the Fourier series is that if $f(x)$ is periodic and piecewise smooth, then it can be written as a series of sine and cosine functions with increasing frequency.
+    \begin{itemize}
+        \item The Fourier series uses the Lebesque integrable functions over the range of $-\pi$ to $\pi$ (in other words, $L^2[-\pi, \pi]$). 
+    \end{itemize}
+    \item Example: If $f(x)$ is $2\pi$-periodic, it can be written as:
+    \begin{equation*}
+        f(x) = \frac{a_0}{2} + \sum^\infty_{k=1} (a_kcos(kx)+ b_ksin(kx))
+    \end{equation*}
+    Where:
+    \begin{equation*}
+        a_k = \frac{1}{\pi}\int^\pi_{-\pi}f(x)cos(kx) dx
+    \end{equation*}
+    \begin{equation*}
+        b_k = \frac{1}{\pi}\int^\pi_{-\pi}f(x)sin(kx) dx
+    \end{equation*}
+    $a_k$ and $b_k$ can be viewed as the coordinates from projecting the function, $f(x)$, onto the orthogonal sine and cosine basis ($\{cos(kx), sin(kx)\}^\infty_{k=0}$).
+    \begin{itemize}
+        \item \textbf{Note:} Functions are orthogonal if the two functions' inner product (dot product) is equal to 0. Analogous to vectors.
+    \end{itemize}
+    \item
 \end{itemize}
+
+
 
 \end{document}
