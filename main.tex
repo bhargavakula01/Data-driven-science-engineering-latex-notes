@@ -1025,7 +1025,70 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \begin{itemize}
         \item \textbf{Note:} Functions are orthogonal if the two functions' inner product (dot product) is equal to 0. Analogous to vectors.
     \end{itemize}
-    \item
+    \item One can rewrite the above equations for $a_k$ and $b_k$ to be the following:
+    \begin{equation*}
+        a_k = \frac{1}{\Vert cos(kx) \Vert^2}\left<f(x), cos(kx)\right>
+    \end{equation*}
+    \begin{equation*}
+        b_k = \frac{1}{\Vert sin(kx) \Vert^2}\left<f(x), sin(kx)\right>
+    \end{equation*}
+    Where $\Vert cos(kx) \Vert^2 = \Vert sin(kx) \Vert^2 = \pi$. This can be easily verified by integrating $(cos(kx))^2$ and $(sin(kx))^2$ from $-\pi$ to $\pi$.
+    \item How to represent a Fourier series of an L-periodic function on $\left[0, L\right)$:
+    \begin{equation*}
+        f(x) = \frac{a_0}{2} + \sum^\infty_{k=1}\left(a_k cos\left(\frac{2\pi kx}{L} \right) + b_k sin\left(\frac{2\pi kx}{L} \right)\right)
+    \end{equation*}
+    Where:
+    \begin{equation*}
+        a_k = \frac{2}{L}\int^L_{0}f(x)cos\left(\frac{2\pi kx}{L}\right) dx
+    \end{equation*}
+    \begin{equation*}
+        b_k = \frac{2}{L}\int^L_{0}f(x)sin\left(\frac{2\pi kx}{L}\right) dx
+    \end{equation*}
+    \begin{itemize}
+        \item \textit{\textbf{Note:} If you were to apply this to $L^2[-\pi, \pi]$ you would get the above equations}
+    \end{itemize}
+    \item How would one go about using the Fourier series when working with complex numbers?:
+    \begin{itemize}
+        \item Euler's Formula is $e^{ix} = \cos x + i \sin x$
+        \item $c_k = a_k + ib_k$
+    \end{itemize}
+    \begin{align*}
+        f(x) &= \sum^{\infty}_{k=-\infty}c_ke^{ikx} \\
+        &= \sum^{\infty}_{k=-\infty} (a_k + ib_k)(cos(kx) + isin(kx))\\
+        &=(a_0 + ib_0)\sum^{\infty}_{k=1} \left[ (a_{-k} + a_k)cos(kx) +(b_{-k} - b_k)sin(kx) \right] + i\sum^{\infty}_{k=1}  \left[ (b_{-k} + b_k)cos(kx) +(a_{-k} - a_k)sin(kx) \right]\\
+    \end{align*}
+    If $f(x)$ is real then $a_{-k} = a_k$ and $b_{-k} = b_k$
+    \item Checking if $\psi_k = e^{ikx}$ is orthogonal
+    \begin{equation*}
+        \left<\psi_j, \psi_k \right> = \int_{-\pi}^{\pi} e^{ijx}e^{-ikx} dx = \int_{-\pi}^{\pi} e^{i(j-k)x} dx = \left[ \frac{e^{i(j-k)x}}{i(j-k)} \right]^{\pi}_{-\pi} = \begin{cases} 0 & \text{if } j \neq k, \\ 2\pi & \text{if } j = k. \end{cases}
+    \end{equation*}
+    So $\left<\psi_k, \psi_j \right> = 2\pi \delta_{jk}$ where $\delta_{jk}$ is the kronecker delta function. Furthermore, the functions $e^{i2\pi kx/L}$ is a basis for $L^2[0, L]$ (square intergrable functions from $0$ to $L$).
+    \begin{itemize}
+        \item The Kronecker delta function ($\delta_{ij}$) us a discrete function of to integers $i$ and $j$ where
+        \begin{equation*}
+            \begin{cases}
+                0 & \text{if } i \neq j, \\ 
+                1 & \text{if } i = j
+            \end{cases}
+        \end{equation*}
+    \end{itemize}
+    \item To summarize, the Fourier series represents a function $f(x)$ as an infinite sum of sine and cosine functions, effectively transforming it into a new basis in function space. Furthermore, the Fourier series is only valid for a function that is periodic from $[-L, L]$. The Fourier Transform (discussed in the next section) will generalize this for non-periodic functions.
+\end{itemize}
+
+\subsubsection*{Fourier Transform}
+\begin{itemize}
+    \item Restatement of the general formula for Fourier Series ($[-L,L]$):
+    \begin{equation*}
+        f(x) = \frac{a_0}{2}+\sum_{k=1}^\infty \left[ a_kcos\left(\frac{k\pi x}{L}\right) + b_ksin\left(\frac{k\pi x}{L}\right) \right] = \sum_{k=-\infty}^\infty e^{i2\pi kx/L}
+    \end{equation*}
+    \item if one took the limit $L\rightarrow \infty$, the discrete frequencies (where, $w_k = \frac{k\pi}{L}$ in this context) become continuous, and one can get the following equation:
+    \begin{equation*}
+        f(x) = lim_{\Delta w \rightarrow 0} \sum_{k=-\infty}^{\infty} \frac{\Delta w}{2\pi} \left[\int^{\pi/\Delta w}_{-\pi/\Delta w} f(\zeta)e^{-ik\Delta w\zeta} d\zeta \right] e^{ik\Delta wx}
+    \end{equation*}
+    where, 
+    \begin{equation*}
+        \int^{\pi/\Delta w}_{-\pi/\Delta w} f(\zeta)e^{-ik\Delta w\zeta} d\zeta = \left<f(x), \psi_k(x) \right>
+    \end{equation*}
 \end{itemize}
 
 
