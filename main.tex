@@ -1073,13 +1073,22 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \end{equation*}
     \end{itemize}
     \item To summarize, the Fourier series represents a function $f(x)$ as an infinite sum of sine and cosine functions, effectively transforming it into a new basis in function space. Furthermore, the Fourier series is only valid for a function that is periodic from $[-L, L]$. The Fourier Transform (discussed in the next section) will generalize this for non-periodic functions.
+    \item Example:
+    \begin{equation*}
+        f(x) = \sum_{k=-\infty}^{\infty} c_k\psi_k(x) = \frac{1}{2\pi} \sum_{k=-\infty}^{\infty} \left<f(x), \psi_k (x) \right>psi_k (x)
+    \end{equation*}
+    Where $\psi_k(x) = e^{ikx} = cos(kx) + isin(kx)$ and $c_k = (1/(2\pi))\left<f(x),\psi_k(x)\right>$. The factor, $1/(2\pi)$, normalizes the projection by the square of the norm of $\psi_k$ ($\Vert \psi_k \Vert^2 = 2\pi$). The equation provided above is similar to converting a vector from one coordinate system to another (changing the basis), which is represented by the equation provided:
+    \begin{align*}
+        \overset{\rightharpoonup}{f} &= \left<\overset{\rightharpoonup}{f}, \overset{\rightharpoonup}{x} \right> \frac{\overset{\rightharpoonup}{x}}{\Vert \overset{\rightharpoonup}{x} \Vert^2} + \left<\overset{\rightharpoonup}{f}, \overset{\rightharpoonup}{y} \right> \frac{\overset{\rightharpoonup}{y}}{\Vert \overset{\rightharpoonup}{y} \Vert^2} \\
+        &= \left<\overset{\rightharpoonup}{f}, \overset{\rightharpoonup}{u} \right> \frac{\overset{\rightharpoonup}{u}}{\Vert \overset{\rightharpoonup}{u} \Vert^2} + \left<\overset{\rightharpoonup}{f}, \overset{\rightharpoonup}{v} \right> \frac{\overset{\rightharpoonup}{v}}{\Vert \overset{\rightharpoonup}{v} \Vert^2} 
+    \end{align*}
 \end{itemize}
 
 \subsubsection*{Fourier Transform}
 \begin{itemize}
     \item Restatement of the general formula for Fourier Series ($[-L,L]$):
     \begin{equation*}
-        f(x) = \frac{a_0}{2}+\sum_{k=1}^\infty \left[ a_kcos\left(\frac{k\pi x}{L}\right) + b_ksin\left(\frac{k\pi x}{L}\right) \right] = \sum_{k=-\infty}^\infty e^{i2\pi kx/L}
+        f(x) = \frac{a_0}{2}+\sum_{k=1}^\infty \left[ a_kcos\left(\frac{k\pi x}{L}\right) + b_ksin\left(\frac{k\pi x}{L}\right) \right] = \sum_{k=-\infty}^\infty c_ke^{i2\pi kx/L}
     \end{equation*}
     \item if one took the limit $L\rightarrow \infty$, the discrete frequencies (where, $w_k = \frac{k\pi}{L}$ in this context) become continuous, and one can get the following equation:
     \begin{equation*}
