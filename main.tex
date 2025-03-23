@@ -1098,8 +1098,65 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \begin{equation*}
         \int^{\pi/\Delta w}_{-\pi/\Delta w} f(\zeta)e^{-ik\Delta w\zeta} d\zeta = \left<f(x), \psi_k(x) \right>
     \end{equation*}
+    \item After evaluating the limit from the above equations, $\left< f(x), \psi_k(x) \right>$ becomes the Fourier transform of the vector, denoted as the following ($\hat{f}(w) \triangleq \mathcal{F}(f(x))$). This leads to the following two equations, which are also known as the \textbf{Fourier transform pair}.
+    \begin{align*}
+        \hat{f}(w) &= \mathcal{F}(f(x)) = \int^\infty_{-\infty} f(x)e^{-iwx}dx \\
+        f(x) &= \mathcal{F}^{-1}(\hat{f}(w)) = \int^\infty_{-\infty} \hat{f}(w)e^{iwx}dw
+    \end{align*}
+    Both of the above integrals will converge if they are part of the space of Lebesgue integrals ($f,\hat{f} \in L^1(-\infty, \infty)$).
+    \item What are some applications of Fourier Transforms?:
+    \begin{enumerate}
+        \item Taking Fourier Transforms for derivatives of functions:
+        \begin{itemize}
+            \item Derivation:
+            \begin{align*}
+                \mathcal{F}\left(\frac{d}{dx} f(x) \right) &= \int^\infty_{-\infty} f^{'}(x)\psi_k(x)dx \\
+                &= \int^\infty_{-\infty} f^{'}(x)e^{-iwx}dx \\
+                &= \left[ f(x)e^{-iwx}\right]^{\infty}_{-\infty} - \int^\infty_{-\infty} f(x)\left[-iwe^{-iwx}\right]dx \\
+                &= iw\int^\infty_{-\infty} f(x)e^{-iwx}dx \\
+                &= iw\mathcal{F}(f(x))
+            \end{align*}
+            Therefore:
+            \begin{equation*}
+                \mathcal{F}\left(\frac{d^n}{dx^n} f(x)\right) = i^nw^n\mathcal{F}(f(x))
+            \end{equation*}
+        \end{itemize}
+        \item Linearity of Fourier Transforms:
+        \begin{itemize}
+            \item The fourier transform is a linear operator:
+            \begin{equation*}
+                \mathcal{F}(af(x) + bg(x)) = a\mathcal{F}(f) + b\mathcal{F}(g)
+            \end{equation*}
+            Similarly:
+            \begin{equation*}
+                \mathcal{F}^{-1}(a\hat{f}(w) + b\hat{g}(w)) = a\mathcal{F}^{-1}(\hat{f}) + b\mathcal{F}^{-1}(\hat{g})
+            \end{equation*}
+        \end{itemize}
+        \item Parseval's Theorem:
+        \begin{equation*}
+            \int_{-\infty}^{\infty} |\hat{f}(w)|^2dw =2\pi\int_{-\infty}^{\infty} |f(x)|^2dx
+        \end{equation*}
+        \item Convolution
+        \begin{itemize}
+            \item \textbf{Convolution} is the product of 2 Fourier transformed functions
+            \item General Equation:
+            \begin{equation*}
+                (f\star g)(x) = \int_{-\infty}^{\infty} f(x - \zeta)g(\zeta)d\zeta
+            \end{equation*}
+            \item Derivation:
+            \begin{align*}
+                \mathcal{F}^-1(\hat{f}\hat{g})(x) &= \frac{1}{2\pi} \int^{\infty}_{-\infty} \hat{f}(w)\hat{g}(w)e^{iwx}dw\\
+                &= \int^{\infty}_{-\infty}\hat{f}(w)e^{iwx}\left( \frac{1}{2\pi} \int^{\infty}_{-\infty}g(y)e^{-iwy}dy \right)dw \\
+                &= \frac{1}{2\pi} \int^{\infty}_{-\infty} \int^{\infty}_{-\infty} g(y)\hat{f}(w)e^{iw(x-y)}dwdy \\
+                &= \int^{\infty}_{-\infty} g(y) \left( \frac{1}{2\pi}\int^{\infty}_{-\infty} \hat{f}(w)e^{iw(x-y)}dw \right)dy \\
+                &= \int^{\infty}_{-\infty} g(y)f(x-y) = g \star f = f \star g
+            \end{align*}
+            \textit{One can use the \textbf{Fourier Transform pair} to determine how $\frac{1}{2\pi}\int^{\infty}_{-\infty} \hat{f}(w)e^{iw(x-y)}dw = f(x-y)$}
+        \end{itemize}
+    \end{enumerate}
 \end{itemize}
 
+\subsection*{Discrete Fourier Transform (DFT) and Fast Fourier Transform (FFT)}
 
 
 \end{document}
