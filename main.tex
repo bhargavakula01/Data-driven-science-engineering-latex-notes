@@ -1071,6 +1071,12 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
                 1 & \text{if } i = j
             \end{cases}
         \end{equation*}
+        \item \textbf{Note from Chat GPT: }Both the \textbf{Kronecker delta} and the \textbf{Dirac delta} function represent impulse-like behavior, but their key distinction lies in the space they operate in: 
+        \begin{itemize}
+            \item Kronecker delta (\( \delta_{ij} \)) is used in \textbf{discrete space} (integer indices), acting as a selector in summations.
+            \item Dirac delta (\( \delta(x) \)) is used in \textbf{continuous space} (real numbers), acting as an impulse in integrals.
+        \end{itemize}
+        You can think of the Dirac delta as the \textbf{continuous analogue} of the Kronecker delta. In fact, if you sample the Dirac delta function at discrete points, you essentially get the Kronecker delta.
     \end{itemize}
     \item To summarize, the Fourier series represents a function $f(x)$ as an infinite sum of sine and cosine functions, effectively transforming it into a new basis in function space. Furthermore, the Fourier series is only valid for a function that is periodic from $[-L, L]$. The Fourier Transform (discussed in the next section) will generalize this for non-periodic functions.
     \item Example:
