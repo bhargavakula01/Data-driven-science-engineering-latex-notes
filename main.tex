@@ -962,8 +962,9 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \item Fourier Transform decomposing PDEs are analogous to SVD decomposing high-dimensional matrices
     \item The Fourier transform and Fourier series are closely related to the geometry of \textbf{hilbert spaces} (infinite-dimensional function spaces), which generalize vector spaces to include functions that contain infinitely many degrees of freedom (aka. \textbf{function spaces)}.
     \begin{itemize}
-        \item \textbf{Note:} A \textbf{Hilbert space} is a complete vector space that is equipped with an inner product. Hilbert spaces were originally used to study finite-dimensional vector spaces but have been expanded to study function spaces, essentially vector spaces of infinite dimension.
+        \item \textbf{Note:} A \textbf{Hilbert space} is a complete vector space that is equipped with an inner product. Hilbert spaces were originally used to study finite-dimensional vector spaces but have been expanded to study function spaces (essentially vector spaces of infinite dimension).
         \item \textbf{Information from Chat GPT: }An inner product space is a vector space $V$ over $\mathbb{R}$ or $\mathbb{C}$ with a function $\langle \cdot, \cdot \rangle : V \times V \to \mathbb{F}$ (where $\mathbb{F}$ is either $\mathbb{R}$ or $\mathbb{C}$) called an inner product, satisfying the following properties for all $x, y, z \in V$ and scalars $\alpha$.
+        \item \textbf{Information from Claude: }A complete space is one where all Cauchy sequences converge to a value within the space.
     \end{itemize}
 \end{itemize}
 
@@ -1164,7 +1165,60 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \end{itemize}
 
 \subsection*{Discrete Fourier Transform (DFT) and Fast Fourier Transform (FFT)}
+\begin{itemize}
+    \item The \textbf{DFT (Discrete Fourier Transform)} is essentially applying the Fourier transform to discrete functions; however, this method does not scale well with the input data size (requires $O(n^2)$ operations). James W. Cooley and John W. Tukey developed the \textbf{FFT (Fast Fourier transform)}.
+\end{itemize}
 
+\subsubsection*{Discrete Fourier Transform}
+\begin{itemize}
+    \item Formulation of the DFT:
+    \begin{equation*}
+        \Hat{f}_k = \sum^{n-1}_{j=0} f_je^{-i2\pi jk/n}
+    \end{equation*}
+    \item The formulation of the inverse DFT (iDFT):
+    \begin{equation*}
+        f_k = \frac{1}{n}\sum^{n-1}_{j=0}\Hat{f}_je^{i2\pi jk/n}
+    \end{equation*}
+    \item Essentially, the DFT is a \textbf{linear operator} that converts data points in $f$ to $\Hat{f}$ (in the frequency domain). The output vector ($\Hat{f}$) contains the Fourier coefficients for the input vector, $f$, and the DFT matrix $F$ is a unitary Vandermonde matrix.
+    \begin{equation*}
+        \begin{bmatrix}
+            \hat{f}_1 \\
+            \hat{f}_2 \\
+            \hat{f}_3 \\
+            \vdots \\
+            \hat{f}_n
+        \end{bmatrix} = 
+        \begin{bmatrix}
+            1 & 1 & 1 & \hdots & 1 \\
+            1 & \omega_n & \omega_n^2 & \hdots & \omega_n^{n-1} \\
+            1 & \omega_n^2 & \omega_n^4 & \hdots & \omega_n^{2(n-1)} \\
+            \vdots & \vdots & \vdots & \ddots & \vdots \\
+            1 & \omega_n^{n-1} & \omega_n^{2(n-1)} & \vdots & \omega_n^{(n-1)^2}
+        \end{bmatrix} 
+        \begin{bmatrix}
+            f_1 \\
+            f_2 \\
+            f_3 \\
+            \vdots \\
+            f_n
+        \end{bmatrix}
+    \end{equation*}
+    where $\omega_n = e^{-2\pi i/n}$. The unitary Vandermonde matrix shown above is also complex-valued, which means that the output has both a magnitude and a phase.
+    \begin{itemize}
+        \item A \textbf{Vandermonde matrix} is a matrix that is defined by the powers of a set of elements. It has the following structure:
+        \begin{equation*}
+            V = 
+            \begin{pmatrix}
+                1 & x_1 & x_1^2 & \cdots & x_1^{n-1} \\
+                1 & x_2 & x_2^2 & \cdots & x_2^{n-1} \\
+                1 & x_3 & x_3^2 & \cdots & x_3^{n-1} \\
+                \vdots & \vdots & \vdots & \ddots & \vdots \\
+                1 & x_n & x_n^2 & \cdots & x_n^{n-1}
+            \end{pmatrix}
+        \end{equation*}
+    \end{itemize}
+\end{itemize}
 
+\subsubsection*{Fast Fourier Transform}
 
 \end{document}
