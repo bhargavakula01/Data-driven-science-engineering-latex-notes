@@ -1208,17 +1208,62 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \item A \textbf{Vandermonde matrix} is a matrix that is defined by the powers of a set of elements. It has the following structure:
         \begin{equation*}
             V = 
-            \begin{pmatrix}
+            \begin{bmatrix}
                 1 & x_1 & x_1^2 & \cdots & x_1^{n-1} \\
                 1 & x_2 & x_2^2 & \cdots & x_2^{n-1} \\
                 1 & x_3 & x_3^2 & \cdots & x_3^{n-1} \\
                 \vdots & \vdots & \vdots & \ddots & \vdots \\
                 1 & x_n & x_n^2 & \cdots & x_n^{n-1}
-            \end{pmatrix}
+            \end{bmatrix}
         \end{equation*}
+        \item A \textbf{unitary Vandermonde matrix} is a specific type of Vandermonde matrix where the matrix contains the regular Vandermonde structure but is also unitary($VV^* = V^*V = I$)
     \end{itemize}
 \end{itemize}
 
 \subsubsection*{Fast Fourier Transform}
+
+\begin{itemize}
+    \item Because the DFT scales in $O(n^2)$ time, the FFT (Fast Fourier Transform) is usually preferred (as it scales in $O(nlog(n))$ time)
+    \item Basic idea around FFT:
+    \begin{itemize}
+        \item FFT states that DFT can be performed more efficiently when $n$ is a power of 2.
+        \item Ex:
+        \begin{enumerate}
+            \item Assume $n=1024 = 2^{10}$
+            \item then, $F_{1024}$ can be written as the following:
+            \begin{equation*}
+                \Hat{f} = F_{1024}f = 
+                \begin{bmatrix}
+                     I_{512} & D_{512} \\
+                     I_{512} & -D_{512}
+                \end{bmatrix} 
+                \begin{bmatrix}
+                    F_{512} & 0 \\
+                    0 & F_{512}
+                \end{bmatrix}
+                \begin{bmatrix}
+                    f_{even} \\
+                    f_{odd}
+                \end{bmatrix}
+            \end{equation*}
+            where,
+            \begin{equation*}
+                D_{512} = 
+                \begin{bmatrix}
+                    1 & 0 & 0 & \hdots & 0 \\
+                    0 & \omega & 0 & \hdots & 0 \\
+                    0 & 0 & \omega^2 & \hdots & 0 \\
+                    \vdots & \vdots & \vdots & \ddots & \vdots \\
+                    0 & 0 & 0 & \hdots & \omega^{511}
+                \end{bmatrix}
+            \end{equation*}
+            and $f_{even}$ are the even indexed values and $f_{odd}$ are the odd indexed values
+            
+            \textit{\textbf{Note: }The above equation for FFT is just derived from the DFT equation when $n$ is a power of 2}
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Transforming Partial Differential Equations}
 
 \end{document}
