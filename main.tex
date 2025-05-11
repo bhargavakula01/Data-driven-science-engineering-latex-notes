@@ -384,9 +384,8 @@ Code to perform image compression using SVD:
 \begin{itemize}
     \item When performing SVD, the columns of the matrix $U$ is orthonormal to the columns of $X$ and the columns of matrix $V$ is orthonormal to the rows of $X$.
     \begin{itemize}
-        \item \textbf{What are orthonormal vectors?:} These are vectors that are orthogonal to each other (dot product = 0), and the vectors have unit mangitude (the magnitude of the vectors are equal to 1).
+        \item \textbf{What are orthonormal vectors (for my review :))?:} These are vectors that are orthogonal to each other (dot product = 0), and the vectors have unit mangitude (the magnitude of the vectors are equal to 1).
     \end{itemize}
-    
 \end{itemize}
 
 \subsubsection*{Invariance of the SVD to Unitary Transformations}
@@ -1297,8 +1296,42 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             \textit{\textbf{Note: }The above equation for FFT is just derived from the DFT equation when $n$ is a power of 2}
         \end{enumerate}
     \end{itemize}
+    \item Ex: Noise Filtering using FFT
+    \item Ex: Spectral Derivatives of functions using FFT
+    
 \end{itemize}
 
 \subsection*{Transforming Partial Differential Equations}
+
+\begin{itemize}
+    \item The Fourier transform was a method initially used to transform the heat equation into an eigenfunction coordinate system to decouple the dynamics.
+    \begin{itemize}
+        \item coordinates in the context of linear algebra are the coefficients in the linear combination of the basis vectors that reconstruct the original vector.
+        \item In the above statement, the meaning of the phrase "eigenfunction coordinate system" refers to the idea that the sinusoidal functions formed after performing the Fourier transforms are the eigenfunctions (they are the eigenfunctions of the second differential operator $\rightarrow \frac{d^2}{dx^2}$). The eigenvalues will be the frequencies of the sinusoidal functions.
+    \end{itemize}
+    \item Ex: Heat Equation (only looking at one spatial dimension)
+    \begin{itemize}
+        \item Heat Equation ($1$ spatial dimension + time dimension):
+        \begin{equation*}
+            u_t = \alpha^2u_{xx}
+        \end{equation*}
+        Where $u_t$ is the derivative of $u$ with respect to $t$ and $u_{xx}$ is the derivative of $u$ with respect to $x$.
+        \item If we end up performing the Fourier transform in the spatial dimension ($\mathcal{F}(u(x,t)) = \hat u(t, \omega)$)
+        \begin{equation*}
+            \hat{u}_t = -\alpha^2\omega^2\hat{u}
+        \end{equation*}
+        The $-\omega^2$ comes from the fact that we have a second derivative of $u$ with respect to $x$ $\rightarrow (i\omega)^2 = -\omega^2$.
+        \item The Fourier transform causes the PDE heat equation to become a ODE, leading to a temperature distribution for each frequency ($\omega$): \href{https://chatgpt.com/c/681fa993-0a2c-800a-9edd-88c848b307f9}{\textit{Link for Derivation}}
+        \begin{equation*}
+            \hat{u}(t, \omega) = e^{-\alpha^2\omega^2t}\hat{u}(0,\omega)
+        \end{equation*}
+        \item Using FFT, one can get a similar equation:
+        \begin{equation*}
+            \hat{u}(t) = -\alpha^2\kappa^2\hat{u}
+        \end{equation*}
+        Where $\kappa$ is discretized frequency
+    \end{itemize}
+\end{itemize}
+
 
 \end{document}
