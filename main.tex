@@ -1140,8 +1140,8 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \begin{equation*}
         \int^{\pi/\Delta w}_{-\pi/\Delta w} f(\zeta)e^{-ik\Delta w\zeta} d\zeta = \left<f(x), \psi_k(x) \right>
     \end{equation*}
-    \item After evaluating the limit from the above equations, $\left< f(x), \psi_k(x) \right>$ becomes the Fourier transform of the vector, denoted as the following ($\hat{f}(w) \triangleq \mathcal{F}(f(x))$). This leads to the following two equations, which are also known as the \textbf{Fourier transform pair}.
-    \begin{align*}
+    \item After evaluating the limit from the above equations, $\left< f(x), \psi_k(x) \right>$ becomes the Fourier transform of the vector, denoted as the following ($\hat{f}(w) \triangleq \mathcal{F}(f(x))$). This leads to the following two equations, which are also known as the \hl{\textbf{Fourier transform pair}}.
+    \begin{align*} 
         \hat{f}(w) &= \mathcal{F}(f(x)) = \int^\infty_{-\infty} f(x)e^{-iwx}dx \\
         f(x) &= \mathcal{F}^{-1}(\hat{f}(w)) = \int^\infty_{-\infty} \hat{f}(w)e^{iwx}dw
     \end{align*}
@@ -1321,17 +1321,79 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             \hat{u}_t = -\alpha^2\omega^2\hat{u}
         \end{equation*}
         The $-\omega^2$ comes from the fact that we have a second derivative of $u$ with respect to $x$ $\rightarrow (i\omega)^2 = -\omega^2$.
-        \item The Fourier transform causes the PDE heat equation to become a ODE, leading to a temperature distribution for each frequency ($\omega$): \href{https://chatgpt.com/c/681fa993-0a2c-800a-9edd-88c848b307f9}{\textit{Link for Derivation}}
+        \item The Fourier transform causes the PDE heat equation to become a ODE, leading to a temperature distribution for each frequency ($\omega$): \href{https://chatgpt.com/c/681fa993-0a2c-800a-9edd-88c848b307f9}{\textit{Link for Derivation}}. 
         \begin{equation*}
             \hat{u}(t, \omega) = e^{-\alpha^2\omega^2t}\hat{u}(0,\omega)
         \end{equation*}
+
+        \hl{\textit{The "Fourier Transform pair" equations are used to get the above solution.}}
+        
         \item Using FFT, one can get a similar equation:
         \begin{equation*}
             \hat{u}(t) = -\alpha^2\kappa^2\hat{u}
         \end{equation*}
         Where $\kappa$ is discretized frequency
+        \item Code to solve this PDE numerically (Using Julia Lang):
     \end{itemize}
+    \item Ex: One-Way Wave Equation
+    \item Ex: Burger's Equation
 \end{itemize}
 
+\subsection*{Gabor Transform and the Spectrogram}
+
+\begin{itemize}
+    \item Fourier Transforms give information about the frequency content of a given signal, but it doesn't provide information about when in time those frequencies occur. This \href{https://chatgpt.com/c/6828e522-a420-800a-9866-46da3fc297f3}{link} provides information about STFT and why the Fourier transform doesn't provide information about the times that frequencies occur
+    \begin{itemize}
+        \item The integration creates the function $F(\omega)$ which will essentially provide you information of the strength of that frequency accrross the entire signal.
+        \item \textbf{From Chat GPT:} You're integrating over all time, so the result ($F(\omega)$) gives global frequency content. Basically, it tells you what frequencies are present anywhere in time, but not when they occur.
+    \end{itemize}
+    \item The Gabor transform (aka. Short-time Fourier transform (STFT) computes a "windowed FFT" for a moving window. This results in a \textbf{spectrogram}, a plot that relates frequency to time. Below is the equation for STFT
+    \begin{equation*}
+        G(f)(t,\omega)= \hat{f}_g(t,\omega) = \int_{-\infty}^{\infty} f(\tau)e^{-i\omega\tau}\bar{g}(\tau-t)d\tau = \left<f, g_{t,\omega}\right>
+    \end{equation*}
+    Where,
+    \begin{conditions}
+        g_{t,\omega}(\tau) & $e^{i\omega t}g(\tau-t)$ \\
+        g(t) & $e^{-(t-\tau)^{2}/a^2}$ (the kernel and is often a Gaussian) \\
+        \tau & The center of the moving window
+    \end{conditions}
+    \begin{itemize}
+        \item The "kernel" is essentially the function used to determine the weight of each datapoint within the window. One example is a Gaussian curve, but others include rectangular, Hamming, and Hann.
+        \begin{figure}[hbt!]
+            \centering
+            \includegraphics[width=0.7\linewidth]{Figures/Kernel_Example_STFT.png}
+            \caption{Example of a Kernel Function for STFT}
+            \label{fig:Kernel_Func_STFT}
+        \end{figure}
+    \end{itemize}
+    \item The Inverse STFT is:
+    \begin{equation*}
+        f(t) = G^{-1}(\hat{f}_g(t,\omega)) = \frac{1}{2\pi \Vert g\Vert^2}\int_{-\infty}^{\infty}\int_{-\infty}^{\infty} \hat{f}_g(\tau, \omega)g(t-\tau)e^{i\omega t}d\omega dt
+    \end{equation*}
+    
+\end{itemize}
+
+\subsubsection*{Discrete Gabor Transform}
+
+\begin{itemize}
+    \item For the \textbf{Discrete Gabor Transform} one needs to discretize in both frequency and time.
+    \begin{align*}
+        v &= j\Delta\omega \\
+        \tau &= k\Delta\tau
+    \end{align*}
+    \item The discretized kernel function is the following:
+    \begin{equation*}
+        g_{j,k} e^{i2\pi j\Delta\omega t}g(t-k\Delta t)
+    \end{equation*}
+    \item The discrete Gabor transform is the following:
+    \begin{equation*}
+        \hat{f}_{j, k} = \left<f,g_{j,k}\right> = \int_{-\infty}^{\infty} f(\tau)\bar{g}(\tau)d\tau
+    \end{equation*}
+    The integral can be solved numerically using Riemann sums.
+\end{itemize}
+
+\subsubsection*{Examples of using Gabor Transform}
+
+\subsection*{Wavelets and Multi-Resolution Analysis}
 
 \end{document}
