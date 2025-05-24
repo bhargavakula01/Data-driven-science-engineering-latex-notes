@@ -1428,7 +1428,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             \end{enumerate}
         \end{itemize}
     \end{itemize}
-    \item Basic idea around how \textbf{Wavelet Analysis} work:
+    \item Basic idea around how \href{https://chatgpt.com/c/68322139-e808-800a-82fc-2ab7dbf0e8f2}{\textbf{Wavelet Analysis}} work:
     \begin{enumerate}
         \item It starts with the \textbf{mother wavelet}. This function will then be used to generate a family of scaled and translated versions.
         \begin{equation*}
@@ -1444,7 +1444,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             \end{cases}
         \end{equation*}
         By choosing each higher frequency layer as a bisection of the lower layers, the \textbf{Haar} wavelets are orthogonal (thus they are a great basis for a signal).
-        \item \textbf{Summary:} Wavelets are like \hl{mathematical microscopes} that are used to analyze signals at different scales. They can capture local transient features such as edges, spikes, or sudden changes. Methods like DWT (Discrete Wavelet Transform) and CWT (Continuous Wavelet Transform), albeit to a lesser extent, use the wavelets in conjunction with multi-resolution decomposition to reveal the time-frequency characteristics.
+        \item \textbf{Summary:} Wavelets are like \hl{mathematical microscopes} that are used to analyze signals at different scales. They can capture local transient features such as edges, spikes, or sudden changes. Methods like DWT (Discrete Wavelet Transform), which uses the multi-resolution decomposition, and CWT (Continuous Wavelet Transform), which uses the mult-resolution decomposition to a lesser extent, use the wavelets in conjunction with multi-resolution decomposition to reveal the time-frequency characteristics.
         \begin{itemize}
             \item \textit{Think of STFT as a fixed magnifying glass - you see everything with the same “zoom level,” which limits your ability to resolve very fast or very slow changes well.} 
             \item \textit{Wavelet Transform, on the other hand, is like a variable zoom magnifying glass -  you zoom in tightly on fast events (good time resolution) and zoom out to see slow trends clearly (good frequency resolution).}
@@ -1452,9 +1452,42 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \end{enumerate}
     \item Continuous Wavelet Transform (CWT):
     \begin{enumerate}
-        \item 
+        \item Equation to start with:
+        \begin{equation*}
+            W_{\psi}(f)(a,b) = \left< f, \psi_{a,b} \right> = \int_{-\infty}^{\infty}f(t)\bar{\psi}_{a,b}(t)dt
+        \end{equation*}
+        Where, $\bar{\psi}_{a,b}(t)$ is the complex conjugate of $\psi_{a,b}(t)$.
+        \begin{itemize}
+            \item The above equation only works for functions $\psi(t)$ that abides the following property
+            \begin{equation*}
+                C_{\psi} = \int_{-\infty}^{infty} \frac{|\hat{\psi}(\omega)|^2}{|\omega|}d\omega < \infty
+            \end{equation*}
+        \end{itemize}
+        \item The inverse CWT (iCWT) equation is the following:
+        \begin{equation*}
+            f(t) = \frac{1}{C_\psi}\int_{-\infty}^{\infty}\int_{-\infty}^{\infty} W_{\psi}(f)(a,b)\psi_{a,b}(t)\frac{1}{a^2}dadb
+        \end{equation*}
+        \textit{New wavelets can be formed through the convolution $\psi * \phi$ if $\phi$ is a bounded an integrable function}
+    \end{enumerate}
+    \item Discrete Wavelet Transform (DWT):
+    \begin{enumerate}
+        \item Equation:
+        \begin{equation*}
+            W_\psi(f)(j,k) = \left< f, \psi_{j,k} \right> = \int_{-\infty}^{\infty}f(t)\bar{\psi}_{j,k}(t)dt
+        \end{equation*}
+        where $\psi_{j,k}$ is a family of wavelets, which follows the equation shown below:
+        \begin{equation*}
+            \psi_{a, b}(t) = \frac{1}{a^j}\psi\left( \frac{t-kb}{a^j} \right)
+        \end{equation*}
+        \item the inverse DWT (iDWT) equation:
+        \begin{equation*}
+            f(t) = \sum^\infty_{j,k =-\infty} \left<f(t), \psi_{j,k}\right>\psi_{j,k}(t)
+        \end{equation*}
+        \textit{Explicit computation of DWT is pretty involved...}
     \end{enumerate}
 \end{itemize}
+
+\subsection*{Two-Dimensional Transforms and Image Processing}
 
 
 \end{document}
