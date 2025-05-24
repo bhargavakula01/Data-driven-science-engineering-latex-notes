@@ -1393,7 +1393,68 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 \end{itemize}
 
 \subsubsection*{Examples of using Gabor Transform}
+% Will add to this when going through practice problems
 
 \subsection*{Wavelets and Multi-Resolution Analysis}
+\href{https://chatgpt.com/c/683210e2-ed70-800a-ab69-dfbfabae2915}{Some Additional information from Chat GPT on this section}
+\begin{itemize}
+    \item Wavelets extend the concept of Fourier Analysis by extending it to more general orthogonal bases. Furthermore, it partially overcomes the uncertainty principle by making use of \textbf{multi-resolution decomposition}.
+    \begin{itemize}
+        \item \textbf{From ChatGPT:} The \textbf{uncertainty principle} in the context of the Fourier transform is the trade-off in precision between the time (or spatial) and frequency domains. 
+        \begin{itemize}
+            \item Specifically, if a signal is localized to a specific period of time, the frequency content must be spread out.  
+            \item On the other hand, if the signal is associated with a specific range of frequencies, it must be infinite in time.
+        \end{itemize}
+        \item \textbf{From ChatGPT:} The concept of \textbf{multi-resolution analysis} is a technique in signal processing where a signal is analyzed at multiple levels of resolution or scale, allowing one to analyze the signal's global structure and finer details.
+        \begin{figure}[hbt!]
+            \centering
+            \includegraphics[width=0.4\linewidth]{Figures/Uncertainty_principle_Fourier_analysis.png}
+            \caption{Representation of the uncertainty principle in the context of Fourier analysis}
+            \label{fig:Uncertainty Principle FT}
+        \end{figure}
+        \item \textbf{From ChatGPT:} Why are orthogonal basis important:
+        \begin{itemize}
+            \item In linear algebra (in general) orthogonal basis are important for three reasons:
+            \begin{enumerate}
+                \item Simplified computations. Specifically, dot products, projections, and decompositions are easier
+                \item Orthogonal matrices maintain their lengths and angles. Furthermore, symmetric matrices can be diagonalized using orthogonal eigenvectors (aka. Spectral Theorem).
+                \item Numerical stability, as using orthogonal basis reduces errors due to rounding and floating point precision. This is because orthogonal bases are linearly independent. Therefore, linear dependencies can be avoided, which can amplify errors.
+            \end{enumerate}
+            \item In Fourier analysis, orthogonality matters for the following reasons:
+            \begin{enumerate}
+                \item allows for better signal decomposition (as the signal can be represented as a sum of orthogonal components).
+                \item Invertibility and uniqueness
+                \item compression and filtering
+            \end{enumerate}
+        \end{itemize}
+    \end{itemize}
+    \item Basic idea around how \textbf{Wavelet Analysis} work:
+    \begin{enumerate}
+        \item It starts with the \textbf{mother wavelet}. This function will then be used to generate a family of scaled and translated versions.
+        \begin{equation*}
+            \psi_{a, b}(t) = \frac{1}{\sqrt{a}}\psi\left( \frac{t-b}{a} \right)
+        \end{equation*}
+        Where $a$ and $b$ are factors used for scaling (high vs low frequency) and translating (changing in time), respectively.
+        \item An example of a wavelet is the \textbf{Haar} wavelet:
+        \begin{equation*}
+            \psi(t) = \begin{cases}
+                1 & \text{for } 0 \leq t < \frac{1}{2}, \\
+                -1 & \text{for } \frac{1}{2} \leq t < 1, \\
+                0 & \text{otherwise }
+            \end{cases}
+        \end{equation*}
+        By choosing each higher frequency layer as a bisection of the lower layers, the \textbf{Haar} wavelets are orthogonal (thus they are a great basis for a signal).
+        \item \textbf{Summary:} Wavelets are like \hl{mathematical microscopes} that are used to analyze signals at different scales. They can capture local transient features such as edges, spikes, or sudden changes. Methods like DWT (Discrete Wavelet Transform) and CWT (Continuous Wavelet Transform), albeit to a lesser extent, use the wavelets in conjunction with multi-resolution decomposition to reveal the time-frequency characteristics.
+        \begin{itemize}
+            \item \textit{Think of STFT as a fixed magnifying glass - you see everything with the same “zoom level,” which limits your ability to resolve very fast or very slow changes well.} 
+            \item \textit{Wavelet Transform, on the other hand, is like a variable zoom magnifying glass -  you zoom in tightly on fast events (good time resolution) and zoom out to see slow trends clearly (good frequency resolution).}
+        \end{itemize}
+    \end{enumerate}
+    \item Continuous Wavelet Transform (CWT):
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+\end{itemize}
+
 
 \end{document}
