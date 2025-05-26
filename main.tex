@@ -15,6 +15,7 @@
 \usepackage{hyperref}
 %\def\Laplace#1{\mathscr{L}_{\scriptscriptstyle\mathscr{O}\mathscr{V}\mathscr{E}}\{#1\}}
 
+\usepackage{tikz}
 \usepackage{siunitx}
 
 \usepackage[pdftex]{graphicx} % Required for including pictures
@@ -1501,5 +1502,101 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 
 \subsection*{Two-Dimensional Transforms and Image Processing}
 
+\begin{itemize}
+    \item How does 2-D FFT work?
+    \begin{itemize}
+        \item For $X \in \mathbb{R}^{n\times m}$ to perform 2-D Fourier transform, one would first need to perform the 1-D transform on each row. This is because you are treating each row in the matrix as a 1-D signal.
+        \item From the resulting matrix, one would perform FFT on each column by considering each column to be a 1-D signal.
+        \item This will provide frequency information for both vertical and horizontal directions.
+        \item An example of 2-D FFT is image processing.
+    \end{itemize}
+    \item How does higher-dimensional DWT work?
+    \begin{itemize}
+        \item Similarly to FFT, for 2-D DWT one would perform the multi-resolution decomposition for each row in the matrix, then for each column (for $X \in \mathbb{R}^{n\times m}$).
+        \item in DWT, each level forms four quadrants. The diagram is shown below. The levels are not associated with the dimensions. As one goes up levels, the DWT is taken place for only the ``\textbf{LL}'' region.
+        \begin{center}
+            \begin{tikzpicture}[scale=1.5]
+              % Draw the main square
+              \draw[thick] (0,0) rectangle (4,4);
+            
+              % Horizontal and vertical lines to divide into 4 subbands
+              \draw[thick] (2,0) -- (2,4);
+              \draw[thick] (0,2) -- (4,2);
+            
+              % Labels for each region
+              \node at (1,3) {\textbf{LL}};
+              \node at (3,3) {\textbf{LH}};
+              \node at (1,1) {\textbf{HL}};
+              \node at (3,1) {\textbf{HH}};
+            
+              % Optional: add frequency direction indicators
+              \node[rotate=90] at (-0.3,2) {Low Pass $\longrightarrow$ High Pass (rows)};
+              \node at (2,-0.5) {Low Pass $\longrightarrow$ High Pass (columns)};
+            \end{tikzpicture}
+        \end{center}
+        \item Comparing Level 1 and Level 2 DWT:
+        \begin{center}
+            \begin{tikzpicture}[scale=1.2]
+            
+              % -------- Level 1 --------
+              % Outer square for level 1
+              \draw[thick] (0,0) rectangle (4,4);
+            
+              % Level 1 divisions
+              \draw[thick] (2,0) -- (2,4);
+              \draw[thick] (0,2) -- (4,2);
+            
+              % Labels level 1
+              \node at (1,3) {\textbf{LL$_1$}};
+              \node at (3,3) {\textbf{LH$_1$}};
+              \node at (1,1) {\textbf{HL$_1$}};
+              \node at (3,1) {\textbf{HH$_1$}};
+            
+              % Title Level 1
+              \node at (2,-0.7) {\textbf{Level 1 2D DWT}};
+            
+              % -------- Level 2 --------
+              % Shift right by 5 units for level 2
+              \begin{scope}[xshift=6cm]
+            
+                % Outer square for level 2 (same size)
+                \draw[thick] (0,0) rectangle (4,4);
+            
+                % Level 1 divisions (same as before)
+                \draw[thick] (2,0) -- (2,4);
+                \draw[thick] (0,2) -- (4,2);
+            
+                % Level 1 detail labels (unchanged)
+                \node at (3,3) {\textbf{LH$_1$}};
+                \node at (3,1) {\textbf{HH$_1$}};
+                \node at (1,1) {\textbf{HL$_1$}};
+            
+                % Inner square for LL1 (top-left quadrant)
+                \draw[thick] (0,2) rectangle (2,4);
+            
+                % Level 2 divisions inside LL1
+                \draw[thick] (1,2) -- (1,4);
+                \draw[thick] (0,3) -- (2,3);
+            
+                % Level 2 labels inside LL1
+                \node at (0.5,3.5) {\textbf{LL$_2$}};
+                \node at (1.5,3.5) {\textbf{LH$_2$}};
+                \node at (0.5,2.5) {\textbf{HL$_2$}};
+                \node at (1.5,2.5) {\textbf{HH$_2$}};
+            
+                % Title Level 2
+                \node at (2,-0.7) {\textbf{Level 2 2D DWT}};
+              \end{scope}
+            
+            \end{tikzpicture}
+        \end{center}
+    \end{itemize}
+\end{itemize}
+
+%Provide information on 2-dimensional FFT and DWT 
+\subsubsection*{Example Code}
+
+
+\section{Sparsity and Compressed Spacing}
 
 \end{document}
