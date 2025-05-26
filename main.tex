@@ -621,7 +621,15 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
     \begin{itemize}
         \item Provides a statistical interpretation of the coordinate system used to represent the high-dimensional correlated data. The coordinate system involves the use of the correlation matrices (the $XX^*$ and $X^*X$ matrices)
         \begin{itemize}
-            \item \textbf{From ChatGPT:} PCA seeks to transform the data into a coordinate system where the axes are the Principle components which are aligned with directions of maximum variance. The PCs themselves are linear combinations of the original variables that make up the data.
+            \item \textbf{From ChatGPT:} PCA finds directions of maximum variance in the data. SVD, on the other hand, decomposes the data matrix to reveal important latent relationships between input (features) and output (samples), with singular values quantifying their importance.
+            \item \textbf{From ChatGPT:} PCA seeks to transform the data into a coordinate system where the axes are the Principle components (PC) which are aligned with directions of maximum variance. The PCs themselves are linear combinations of the original variables that make up the data.
+            \begin{itemize}
+                \item When we say linear combination, we mean the following:
+                \begin{equation*}
+                    PC_1 = a_1x_1 + a_2x_2 + \hdots + a_nx_n
+                \end{equation*}
+                where $x_n$ represents the original variable, and $a_n$ are the coefficients (aka. loadings) that are determined using the PCA algorithm. \hl{This is why below we state the PCs are eigenvectors of the covariance matrix :).}
+            \end{itemize}
         \end{itemize}
         \item The geometry of the coordinate system is determined using \textbf{Principle Components (PCs)} that are orthogonal to each other but have a maximal correlation with the measurements.
         \item \textbf{From Chat GPT:} PCA transforms this high-dimensional space into a new coordinate system where the axes are the principal components. These new axes are linear combinations of the original features that capture the directions of maximum variance. The PCs provide information on the pattern and structures within the data, many times not directly observable in high dimensional data.
@@ -654,6 +662,10 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \begin{equation*}
             C = \frac{1}{n-1}B^*B
         \end{equation*}
+        An approximation (where $\tilde{B} = \frac{1}{\sqrt{n}}B$):
+        \begin{equation*}
+            C = \frac{1}{n}B^*B = \tilde{B}^*\tilde{B} = V(\sum)^2V^*
+        \end{equation*}
 
         \textit{The reason we use $n-1$ (known as \textbf{Bessel's Correction}) is because the above steps to determine the sample variance does not account for the variance of $\Bar{X}$ (sample mean) against the true mean.}
 
@@ -671,7 +683,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             D &= \frac{1}{n-1}\left(\sum \right)^2
         \end{align*}
 
-        One can relate the singular values to the singular values to the eigenvalues using the following equation:
+        One can relate the singular values to the eigenvalues using the following equation:
         \begin{equation*}
             \lambda_k = \frac{\sigma_k^2}{n-1}
         \end{equation*}
