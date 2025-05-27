@@ -337,7 +337,7 @@ Code to perform image compression using SVD:
 \begin{itemize}
     \item Depending on the problem the state dimension can become very large. The "Method of Snapshots" helps with this problem.
     \begin{itemize}
-        \item The trick is to perform eigendecomposition on the $X^*X$ matrix. This would enable one to determine the matrices $V$ and $\hat{\sum}$. If there are zero singular values from the matrix $\hat{\sum}$, then we would keep the $r$ non-zero part (which is the matrix $\tilde{\sum}$ from earlier) and the corresponding columns $\tilde{V}$ of $V$. From this, one can approximate the first r columns of U (which is $\tilde{U}$):
+        \item The trick is to perform eigendecomposition on the $X^*X$ matrix. This would enable one to determine the matrices $V$ and $\hat{\sum}$. If there are singular values that are equal to 0 in the matrix $\hat{\sum}$, then we would keep the $r$ non-zero part (which is the matrix $\tilde{\sum}$ from earlier) and the corresponding columns $\tilde{V}$ of $V$. From this, one can approximate the first r columns of U (which is $\tilde{U}$):
         \begin{equation*}
             \tilde{U} = X\tilde{V}\tilde{\sum}^{-1}
         \end{equation*}
