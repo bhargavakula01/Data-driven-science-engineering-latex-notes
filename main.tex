@@ -663,14 +663,10 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \begin{equation*}
             C = \frac{1}{n-1}B^*B
         \end{equation*}
-        An approximation (where $\tilde{B} = \frac{1}{\sqrt{n}}B$):
-        \begin{equation*}
-            C = \frac{1}{n}B^*B = \tilde{B}^*\tilde{B} = V(\sum)^2V^*
-        \end{equation*}
 
-        \textit{The reason we use $n-1$ (known as \textbf{Bessel's Correction}) is because the above steps to determine the sample variance does not account for the variance of $\Bar{X}$ (sample mean) against the true mean.}
+        \textit{The reason we use $n-1$ (known as \textbf{Bessel's Correction}) is because the above steps to determine the sample variance does not account for the variance of $\Bar{X}$ (sample mean) against the true mean. When working with the population data set one should use $\frac{1}{n}$ rather than $\frac{1}{n-1}$.}
 
-        \textit{\textbf{From ChatGPT:} Bessel's correction refers to the adjustment made to the calculation of the sample variance or standard deviation to account for the fact that using the sample mean instead of the population mean underestimates the variability in the data.}
+        \textit{\textbf{From ChatGPT:} Bessel's correction refers to the adjustment made to the calculation of the sample variance or standard deviation to account for the fact that using the sample mean instead of the population mean underestimates the variability in the data.}\newline
 
         \item The PCs (principle components) are the eigenvectors of $C$ and they define a change in coordinates.
         \begin{equation*}
@@ -688,6 +684,22 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \begin{equation*}
             \lambda_k = \frac{\sigma_k^2}{n-1}
         \end{equation*}
+
+        \item One can scale $B$ to form $\tilde{B}$ so that $\sigma_k^2 = \lambda_k$ \textit{(Great for when coding this stuff)}:
+
+        \href{https://chatgpt.com/c/68338638-bfb4-800a-9865-2d47ea8773f7}{\textbf{Link for More info}}
+        \begin{itemize}
+            \item When working with the population dataset:
+            \begin{equation*}
+                C = \frac{1}{n}B^*B = \tilde{B}^*\tilde{B} = V(\sum)^2V^*
+            \end{equation*}
+            Where $\tilde{B} = \frac{1}{\sqrt{n}}B$ because $\left(\frac{1}{\sqrt{n}}B\right)^*\left(\frac{1}{\sqrt{n}}B\right) = \frac{1}{n}B^*B$
+            \item When working with the sample dataset:
+            \begin{equation*}
+                C = \frac{1}{n-1}B^*B = \tilde{B}^*\tilde{B} = V(\sum)^2V^*
+            \end{equation*}
+            Where $\tilde{B} = \frac{1}{\sqrt{n-1}}B$ because $\left(\frac{1}{\sqrt{(n-1)}}B\right)^*\left(\frac{1}{\sqrt{(n-1)}}B\right) = \frac{1}{(n-1)}B^*B$
+        \end{itemize}
 
 
         \textit{\textbf{From ChatGPT:} Principal components are the new variables that are formed as linear combinations of the original variables in a dataset. These components aim to capture the maximum variability in the data, making them the most informative features for analysis and dimensionality reduction.}
