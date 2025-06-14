@@ -1695,6 +1695,8 @@ Code:
             \phi_i(t) & basis functions \\
             \alpha_i & coefficients to provide weights to each basis function \\
         \end{conditions}
+        You are decomposing the signal x into a linear combination of basis vectors (the columns of $\psi$), with weights or coefficients given by $s$.
+        
         \item in the context of highly compressible signals, most of the $\alpha_i$ values are equal to 0, with a few significantly large. This enables one to represent a compressible signal as a sparse matrix.
         \begin{equation*}
             x = \Psi s
@@ -1721,12 +1723,57 @@ Code:
     \item Natural images are extremely rare in the vastness of the \textbf{image space}. Therefore, the number of dimensions needed to encode the natural images (essentially non-random images or images that represent the objects we may see in our world) is small, and thus the raw data is highly compressible.
     \begin{figure}[hbt!]
         \centering
-        \includegraphics[width=0.5\linewidth]{Figures/image_space_and_natural_images.png}
+        \includegraphics[width=0.4\linewidth]{Figures/image_space_and_natural_images.png}
         \caption{Space of natural images vs the total image space}
         \label{fig:image-space-vs-natural-images-space}
     \end{figure}
 \end{itemize}
 
+\newpage
 \subsection*{Compressed Sensing}
+
+\begin{itemize}
+    \item This methodology works by collecting a few compressed or random measurements and inferring the sparse representation under the transformed basis. The challenge is that finding the sparsest vector is an NP (non-polynomial) hard problem.
+    \item Mathematically, this method works by utilizing the sparsity of a matrix under a generic basis to achieve full reconstruction while only using a few measurements.
+    \begin{itemize}
+        \item Example: If $x$ is $K$-sparse in $\psi$ then instead of measureing $x$ directly through $n$ measurements, it would be easier to collect less random and/or compressed measurements and work out what the no-zero values in $x$ are.
+        \begin{equation*}
+            y = Cx
+        \end{equation*}
+        Where $C \in \mathbb{R}^{p\times n}$ and $K < p << n$ (p is the amount of linear measurements on state $x$). The measurement matrix $C$ holds the set of $p$ linear measurements on state $x$.
+        \item Because $x = \Psi s$ one can derive the following:
+        \begin{align*}
+            y &= Cx \\ 
+            &= C\Psi s
+        \end{align*}
+        \item One can also write $C\Psi$ as $\Theta$ to get the following equation:
+        \begin{equation*}
+            y = \Theta s
+        \end{equation*}
+        \item In the equation $y = \Theta s$ there are infinitely many solution for $s$. to determine the sparsest solution $\hat s$, one should use the following equation:
+        \begin{equation*}
+            \hat s = argmin_s \Vert s \Vert_0 \text{    subject to  } y= C\Psi s
+        \end{equation*}
+        where $l_0$ norm (or $\Vert \cdot \Vert_0$) equals the number of non-zero entries. Also referred to as the cardinality of the vector.
+        \item The above equation becomes \textbf{intractable} (it cannot be solved efficiently, in other words, it can't be solved in polynomial time) at moderately large $n$ or $K$. However, under certain conditions for $C$, one can relax the optimization to a convex $l_1$-minimization:
+        \begin{equation*}
+            \hat s = argmin_s \Vert s \Vert_1 \text{    subject to  } y= C\Psi s
+        \end{equation*}
+        where,
+        \begin{equation*}
+            \Vert s \Vert_1 = \sum^n_{k=1} |s_k|
+        \end{equation*}
+        \textit{The $l_1$-norm is also known as the taxi-norm or manhattan-norm.}
+        \item The conditions that $C$ needs to be in to use the $l_1$-minimization is the following:
+        \begin{enumerate}
+            \item $C$ must be incoherent wrt the sparsifying basis. In other words, the rows of $C$ are not correlated with the columns of $\Psi$.
+            \item The number of measurements, $p$, must be sufficiently large. Must be in the order of:
+            \begin{equation*}
+                p \approx O\left(Klog\left(\frac{n}{K}\right)\right)\approx k_1Klog\left(\frac{n}{K}\right)
+            \end{equation*}
+            where $k_1$ is dependent on how incoherent $C$ and $\Psi$ are.
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}
 
 \end{document}
