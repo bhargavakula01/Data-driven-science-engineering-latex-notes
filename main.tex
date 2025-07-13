@@ -676,19 +676,19 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
 
         \textit{\textbf{From ChatGPT:} Bessel's correction refers to the adjustment made to the calculation of the sample variance or standard deviation to account for the fact that using the sample mean instead of the population mean underestimates the variability in the data.}\newline
 
-        \item The PCs (principle components) are the eigenvectors of $C$ and they define a change in coordinates.
+        \item The PCs (principle components) are the eigenvectors of $C$ (which are the column vectors of $V$) and they define a change in coordinates.
         \begin{equation*}
             CV = VD \Rightarrow C = VDV^* \Rightarrow D = V^*CV
         \end{equation*}
 
-        Plugging the equation above related $B$ to $C$ and using SVD $B = U\sum V^*$, one can derive the following:
+        Plugging the equation above related $B$ to $C$ and using SVD ($B = U\sum V^*$), one can derive the following:
         \begin{align*}
             C &= \frac{1}{n-1}B^*B \\
             &= \frac{1}{n-1}V\left(\sum \right)^2V^* \\
             D &= \frac{1}{n-1}\left(\sum \right)^2
         \end{align*}
 
-        One can relate the singular values to the eigenvalues using the following equation:
+        One can relate the singular values to the variance from the diagonal matrix $D$ using the following equation:
         \begin{equation*}
             \lambda_k = \frac{\sigma_k^2}{n-1}
         \end{equation*}
@@ -784,6 +784,45 @@ Code:
 \end{verbatim}
 
 \subsubsection*{Ovarian Cancer Example}
+
+\begin{verbatim}
+    # Ovarian cancer example (Julia)
+
+    using Pkg, LinearAlgebra, Random, Plots, Statistics, CSV, DataFrames
+    
+    # importing the CSV:
+    raw_data = CSV.read("data/ovariancancer.csv", DataFrame)
+    
+    σ = Matrix(raw_data[:, 1:end-1])
+    group = raw_data[:,end]
+    
+    U, S, V = svd(σ)
+    S_diagonal = Diagonal(S)
+    
+    #Retrieving pts and plotting:
+    plt = scatter3d()
+    for i = 1:size(σ, 1)
+        x = transpose(V[:, 1]) * σ[i, :]
+        y = transpose(V[:, 2]) * σ[i, :]
+        z = transpose(V[:, 3]) * σ[i, :]
+    
+        if(group[i] == "Cancer")
+            scatter3d!([x], [y], [z], marker=:star5)
+        else
+            scatter3d!([x], [y], [z], marker=:circle)
+        end
+    end
+    
+    savefig("./Ovarian_Cancer.png")
+
+\end{verbatim}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/Ovarian_Cancer.png}
+    \caption{Plot of the Ovarian Cancer Dataset}
+    \label{fig:Plot_Ovarian_Cancer_Example}
+\end{figure}
 
 \subsubsection*{Eigenface Example}
 \textit{This is an example of PCA/SVD... need to return to this}
