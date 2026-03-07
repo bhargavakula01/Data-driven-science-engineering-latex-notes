@@ -81,8 +81,8 @@
     \item General Equation for SVD: $X = U\Sigma V^{*}$. The SVD is a transformation of the orthonormal basis \( \{ \mathbf{v}_i \} \) of the input space into the output space, resulting in the scaled orthonormal basis \( \{ \sigma_i \mathbf{u}_i \} \).
  Below is the derivation:
     \begin{align*}
-        AV &= U\sum \\
-        A &= U\sum V^*
+        AV &= U\Sigma \\
+        A &= U\Sigma V^*
     \end{align*}
     \begin{itemize}
         \item for $X \in \mathbb{C}^{n,m}$, $U \in \mathbb{C}^{n,n}$ and $V \in \mathbb{C}^{m,m}$
@@ -98,11 +98,11 @@
         \item the eigendecomposition of $AA^*$ allows one to determine $U$
         \item if $X$ doesn't have full rank, one can use the \textbf{economy SVD}:
         \begin{equation*}
-            X = U\sum V^* = \begin{bmatrix} \hat U & \hat U^\perp\end{bmatrix}\begin{bmatrix} \hat \sum \\ 0 \end{bmatrix}V^*
+            X = U\Sigma V^* = \begin{bmatrix} \hat U & \hat U^\perp\end{bmatrix}\begin{bmatrix} \hat \Sigma \\ 0 \end{bmatrix}V^*
         \end{equation*}
         Where columns of $\hat U^\perp$ spans a vector space that is complementary and orthogonal to $\hat U$. In the economy SVD, this complementary vector ($\hat U^\perp$) it is associated with singular values equal to 0. As a result, the following equation is derived:
         \begin{equation*}
-            X = \hat U\hat \sum V^*
+            X = \hat U\hat \Sigma V^*
         \end{equation*}
         \textit{The above equation is under the assumption that $n \geq m$ for $X \in \mathbb{C}^{n\time m}$}
     \end{itemize}
@@ -162,19 +162,19 @@
 
 \begin{itemize}
     \item The SVD provides a hierarchy of low-rank approximations as the rank-r approximation is determined by keeping the leading r singular value and discarding the rest.
-    \item We can represent the matrix $X$ as a sum of rank 1 matrices (because $\sum$ is a diagonal matrix). Known as a \textit{diadic summation}. Furthermore, the singular values ($\sigma_k$) are arranged in decreasing order ($\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq ... \geq \sigma_m$)
+    \item We can represent the matrix $X$ as a sum of rank 1 matrices (because $\Sigma$ is a diagonal matrix). Known as a \textit{diadic summation}. Furthermore, the singular values ($\sigma_k$) are arranged in decreasing order ($\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq ... \geq \sigma_m$)
     \begin{equation*}
-        X = \sum^m_{k=1} \sigma_ku_kv_k^*
+        X = \Sigma^m_{k=1} \sigma_ku_kv_k^*
     \end{equation*}
     \item truncated SVD Basis equation
     \begin{equation*}
-        \tilde{X} = \tilde{U}\tilde{\sum}\tilde{V}^*
+        \tilde{X} = \tilde{U}\tilde{\Sigma}\tilde{V}^*
     \end{equation*}
     Where,
     \begin{conditions}
         \tilde{U} & first $r$ columns of matrix U \\
         \tilde{V} & first $r$ columns of matrix V (or first $r$ rows of $V^*$) \\
-        \tilde{\sum} & $r$x$r$ sub-block of matrix $\sum$
+        \tilde{\Sigma} & $r$x$r$ sub-block of matrix $\Sigma$
     \end{conditions}
 \end{itemize}
 
@@ -185,7 +185,7 @@
     \begin{itemize}
         \item States that the optimal rank-$r$ approximation to $X$ is the rank-$r$ truncation of of $X$ (which was previously stated to be $\tilde{X}$)
         \begin{equation*}
-            argmin_{\tilde{X}, s.t rank(\tilde{X})=r} \Vert X - \tilde{X} \Vert_F = \tilde{U}\tilde{\sum}\tilde{V}^*
+            argmin_{\tilde{X}, s.t rank(\tilde{X})=r} \Vert X - \tilde{X} \Vert_F = \tilde{U}\tilde{\Sigma}\tilde{V}^*
         \end{equation*}
         \begin{itemize}
             \item \textit{As the rank $r$ increases, $\tilde{X}$ will start to approach $X$}
@@ -193,7 +193,7 @@
         \end{itemize}
         \item One can quantify the error of the Eckart-Young theorem:
         \begin{equation*}
-            \Vert X - \tilde{X} \Vert^2_F = \sum^m_{k=r+1} \sigma^2_k 
+            \Vert X - \tilde{X} \Vert^2_F = \Sigma^m_{k=r+1} \sigma^2_k 
         \end{equation*}
         \item To calculate relative error, one can use the following equation. This is recommended as error scales with the size \textit{(as larger matrices have more singular values and can result in greater total error)} and magnitude \textit{(if singular values scale linearly with magnitude of $X$, the error scales quadratically with magnitude of $X$ as we are summing the square of singular values)} of $X$.
         \begin{equation*}
@@ -202,7 +202,7 @@
     \end{itemize}
     \item The SVD can be used to provide the optimal rank-r approximation using the matrix 2-norm (aka. spectral norm).
     \begin{equation*}
-        argmin_{\tilde{X}, s.t rank(\tilde{X})=r} \Vert X - \tilde{X} \Vert_2 = \tilde{U}\tilde{\sum}\tilde{V}^*
+        argmin_{\tilde{X}, s.t rank(\tilde{X})=r} \Vert X - \tilde{X} \Vert_2 = \tilde{U}\tilde{\Sigma}\tilde{V}^*
     \end{equation*}
     \begin{itemize}
         \item The 2-norm of matrix X is induced by the vector 2-norm. This is to determine the maximum possible stretching that matrix X can apply to any unit vector. This is known as the spectral norm
@@ -214,7 +214,7 @@
             \item \textbf{Euclidean norm (2-norm):}
             \begin{itemize}
                \item Applies to vectors
-               \item $\|x\|_2 = \sqrt{\sum_{i=1}^n |x_i|^2}$
+               \item $\|x\|_2 = \sqrt{\Sigma_{i=1}^n |x_i|^2}$
                \item Measures the length/magnitude of a vector
                \item While the above equation is for a 2-norm, this can be done for any value. 
             \end{itemize}
@@ -232,7 +232,7 @@
             \item \textbf{Frobenius Norm (2-norm})
             \begin{itemize}
                 \item Applies to matrices
-                \item $\|A\|_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} |A_{ij}|^2}$
+                \item $\|A\|_F = \sqrt{\Sigma_{i=1}^{m} \Sigma_{j=1}^{n} |A_{ij}|^2}$
                 \item One can generalize the Frobenius norm for an entrywise p-norm; however, the entrywise 2-norm is referred to as the "Frobenius Norm."
                 \item \textit{Frobenius norm} is not a matrix norm but more of an entrywise norm for matrices.
             \end{itemize}
@@ -307,33 +307,35 @@ Code to perform image compression using SVD:
         
         \item Solving for $XX^*$:
         \begin{align*}
-            XX^* &= U \begin{bmatrix} \hat{\sum} \\
+            XX^* &= U \begin{bmatrix} \hat{\Sigma} \\
                                     0 
                 \end{bmatrix} V^*V \begin{bmatrix}
-                    \hat{\sum} & 0
+                    \hat{\Sigma} & 0
                 \end{bmatrix} U^* \\
                 &= U \begin{bmatrix}
-                    \hat{\sum}^2 & 0 \\
+                    \hat{\Sigma}^2 & 0 \\
                     0 & 0
                 \end{bmatrix} U^* \\
             XX^*U &= U \begin{bmatrix}
-                    \hat{\sum}^2 & 0 \\
+                    \hat{\Sigma}^2 & 0 \\
                     0 & 0
                 \end{bmatrix}
         \end{align*}
         \item Solving for $X^*X$:
         \begin{align*}
-            X^*X &= V \begin{bmatrix} \hat{\sum} & 0 \end{bmatrix}U^*U \begin{bmatrix} \hat{\sum} \\ 0 \end{bmatrix}V^* \\
-                &= V\hat{\sum}^2V^*
-            X^*XV &= V\hat{\sum}^2 
+            X^*X &= V \begin{bmatrix} \hat{\Sigma} & 0 \end{bmatrix}U^*U \begin{bmatrix} \hat{\Sigma} \\ 0 \end{bmatrix}V^* \\
+                &= V\hat{\Sigma}^2V^*\\
+            X^*XV &= V\hat{\Sigma}^2 
         \end{align*}
         \item This analysis shows that each non-zero singular value of X is the positive square root of the eigenvalue of $X^*X$ and $XX^*$ (these two matrices will have the same eigenvalues). Furthermore if $X = X^*$ (aka. the matrix $X$ is self-adjoint) then the singular values will equal the absolute values of the eigenvalues.
+
+        \textit{\textbf{What is Self Adjoint matrix?}(\href{https://en.wikipedia.org/wiki/Hermitian_matrix}{self-adjoint/Hermitian Matrix}): A self-adjoint matrix is one where $X = X^*$ or in the real space $X = X^T$.}
         \item Some information on determining Adjoint of a matrix: \href{https://www.youtube.com/watch?v=wjekhHnzL_U}{\textbf{Youtube: Adjoint Matrix}}\newline
-        \textit{\textbf{An aside}: Adjoint and Adjugate are many time used interchangeably but in actuality the adjoint involves using the conjugate transpose rather than a regular transpose of the cofactor matrix. \newline The above definition, however, isn't related to the definition of a \href{https://en.wikipedia.org/wiki/Hermitian_matrix}{self-adjoint/Hermitian Matrix}. A self-adjoint matrix is one where $X = X^*$ or in the real space $X = X^T$.}
+        \textit{\textbf{An aside}: Adjoint and Adjugate are many time used interchangeably but in actuality the adjoint involves using the conjugate transpose rather than a regular transpose of the cofactor matrix.}
         \item From this analysis one can also tell that $U$ is the eigenvectors of $XX^*$ and $V$ is the eigenvectors of $X^*X$
         \begin{align*}
-            XX^*U &= U\begin{bmatrix} \hat{\sum}^2 & 0 \\ 0 & 0\end{bmatrix}\\
-            X^*XV &= V\hat{\sum}^2
+            XX^*U &= U\begin{bmatrix} \hat{\Sigma}^2 & 0 \\ 0 & 0\end{bmatrix}\\
+            X^*XV &= V\hat{\Sigma}^2
         \end{align*}
     \end{itemize}
 \end{itemize}
@@ -343,9 +345,9 @@ Code to perform image compression using SVD:
 \begin{itemize}
     \item Depending on the problem the state dimension can become very large. The "Method of Snapshots" helps with this problem.
     \begin{itemize}
-        \item The trick is to perform eigendecomposition on the $X^*X$ matrix. This would enable one to determine the matrices $V$ and $\hat{\sum}$. If there are singular values that are equal to 0 in the matrix $\hat{\sum}$, then we would keep the $r$ non-zero part (which is the matrix $\tilde{\sum}$ from earlier) and the corresponding columns $\tilde{V}$ of $V$. From this, one can approximate the first r columns of U (which is $\tilde{U}$):
+        \item The trick is to perform eigendecomposition on the $X^*X$ matrix. This would enable one to determine the matrices $V$ and $\hat{\Sigma}$. If there are singular values that are equal to 0 in the matrix $\hat{\Sigma}$, then we would keep the $r$ non-zero part (which is the matrix $\tilde{\Sigma}$ from earlier) and the corresponding columns $\tilde{V}$ of $V$. From this, one can approximate the first r columns of U (which is $\tilde{U}$):
         \begin{equation*}
-            \tilde{U} = X\tilde{V}\tilde{\sum}^{-1}
+            \tilde{U} = X\tilde{V}\tilde{\Sigma}^{-1}
         \end{equation*}
     \end{itemize}
     \item To summarize, the SVD is intimately connected to the \textbf{spectral properties} of the compact self-adjoint matrices
@@ -381,7 +383,7 @@ Code to perform image compression using SVD:
         \textit{Here, matrix $V$ is a unitary matrix, therefore $V^{-1} = V^*$}
         \item The SVD can be written in a similar form to the above representations:
         \begin{equation*}
-            XV = U\sum \Rightarrow X = U\sum V^*
+            XV = U\Sigma \Rightarrow X = U\Sigma V^*
         \end{equation*}
     \end{itemize}
 \end{itemize}
@@ -389,9 +391,9 @@ Code to perform image compression using SVD:
 \subsubsection*{Geometric Interpretations}
 
 \begin{itemize}
-    \item When performing SVD, the columns of the matrix $U$ is orthonormal to the columns of $X$ and the columns of matrix $V$ is orthonormal to the rows of $X$.
+    \item When performing SVD, the columns of the matrix $U$ is orthonormal to the columns of $X$ and the columns of matrix $V$ is orthonormal to the rows of $X$. 
     \begin{itemize}
-        \item \textbf{What are orthonormal vectors (for my review :))?:} These are vectors that are orthogonal to each other (dot product = 0), and the vectors have unit mangitude (the magnitude of the vectors are equal to 1).
+        \item \textbf{What are orthonormal vectors (for my review)?:} These are vectors that are orthogonal to each other (dot product = 0), and the vectors have unit mangitude (the magnitude of the vectors are equal to 1).
     \end{itemize}
 \end{itemize}
 
@@ -400,14 +402,25 @@ Code to perform image compression using SVD:
 \begin{itemize}
     \item A interesting, yet useful, property of SVD is when you perform a left or right unitary transformation (an example is discrete fourier transform, or $\mathbb{F}$) to either the $U$ or $V$ matrices, it does not impact the terms in the SVD.
     \item This invariance is attributed to the fact that unitary transformation only rotate a vector but do not move its inner product (aka. dot product)
+
+    Left Unitary Transformation:
+    \begin{equation*}
+        Y = CX = CU_X\Sigma_XV_X^*
+    \end{equation*}
+
+    Right Unitary Transformation:
+    \begin{equation*}
+        Y = XC^* = U_X\Sigma_XV_X^*C^*
+    \end{equation*}
+    \textit{Where $C$ is a unitary matrix}
     \begin{itemize}
         \item \textit{Page 16 in the textbook shows examples of left and right unitary transformations}
     \end{itemize}
-    \item Generic properties of Unitary transformation which make them useful:
+    \item \textbf{(Extra notes)} Generic properties of Unitary transformation which make them useful:
     \begin{itemize}
         \item Preserves lengths (norms) and angles (inner products).
         \item Represents a rotation or reflection in complex vector spaces (orthogonal transformation in real vector spaces).
-        \item Is invertible and stable numerically (no amplification of error).
+        \item Is invertible and stable numerically (no amplification of error from input vectors).
     \end{itemize}
 \end{itemize}
 
@@ -428,13 +441,13 @@ Code to perform image compression using SVD:
     \begin{itemize}
         \item The \textbf{column space} of matrix $A$ is the \textbf{span} of the columns of the columns of $A$. The \textbf{span} is the number of linearly independent vectors. The \textbf{column space} is also known as the \textbf{range}.
         \begin{itemize}
-            \item In SVD, the column space of $A$ in the equation $A = \tilde{U}\tilde{\sum}\tilde{V}^*$ is equal to the column space of $\tilde{U}$ where $\tilde{U}$ is a truncated version of $U$ based on the rank of $X$.
+            \item In SVD, the column space of $A$ in the equation $A = \tilde{U}\tilde{\Sigma}\tilde{V}^*$ is equal to the column space of $\tilde{U}$ where $\tilde{U}$ is a truncated version of $U$ based on the rank of $X$.
             \item The orthogonal complement to the $col(A)$ is $ker(A^*)$ and is given by the column space of $\hat U^\perp$.
         \end{itemize}
 
         \item The \textbf{row space} of $A$ is the span of the rows of $A$ ($\text{row}(A) = \text{col}(A^*)$). \newline
         \begin{itemize}
-            \item In SVD, the row space of $A$ (where $A = \tilde{U}\tilde{\sum}\tilde{V}^*$), is equal to the row space of $\tilde{V}^*$ or the column space of $\tilde{V}$. Similarly, $\tilde{V}$ is a truncated version of $V$ based on the rank of $X$.
+            \item In SVD, the row space of $A$ (where $A = \tilde{U}\tilde{\Sigma}\tilde{V}^*$), is equal to the row space of $\tilde{V}^*$ or the column space of $\tilde{V}$. Similarly, $\tilde{V}$ is a truncated version of $V$ based on the rank of $X$.
             \item the orthogonal complement of $row(A)$ is $ker(A)$ (null space) and is derived from $col(\hat V^\perp$
         \end{itemize}
 
@@ -497,12 +510,12 @@ Code to perform image compression using SVD:
     \begin{itemize}
         \item One can use a pseudo inverse to determine the least-squares solution, as shown in the equation below:
         \begin{align*}
-            b &= ax = \tilde{U}\tilde{\sum}\tilde{V}^*x \\
-            x &= \tilde{V}\tilde{\sum}^{-1}\tilde{U}^*b
+            b &= ax = \tilde{U}\tilde{\Sigma}\tilde{V}^*x \\
+            x &= \tilde{V}\tilde{\Sigma}^{-1}\tilde{U}^*b
         \end{align*}
         Where,
         \begin{conditions}
-            \tilde{\sum} & $\Vert a \Vert_2$ \\
+            \tilde{\Sigma} & $\Vert a \Vert_2$ \\
             \tilde{U} & $\frac{a}{\Vert a \Vert_2}$ \\
             \tilde{V} & 1
         \end{conditions}
@@ -565,7 +578,7 @@ This is an \( n \times n \) **rank-1** matrix, just like the case where \( a \) 
 
 - Since \( M^T M \) is a rank-1 matrix, it has **one nonzero eigenvalue**, which is:
   \[
-  \lambda = \|a\|_2^2 = \sum_{i=1}^n a_i^2.
+  \lambda = \|a\|_2^2 = \Sigma_{i=1}^n a_i^2.
   \]
 
 - The eigenvector corresponding to this nonzero eigenvalue is the normalized version of the row vector \( a \):
@@ -658,7 +671,7 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \item A large number of experiments are taken, with each measurement vector representing a row within the matrix $X$. \textit{This differs from other types of analysis methods where individual features maybe represented as columns in matrix $X$. This methodology of PCA, as discussed in this section of the notes, is aligned with the literature.}
         \item Once the data collection has happened, the average row is computed ($\Bar{x}$)
         \begin{equation*}
-            \Bar{x}_j = \frac{1}{n}\sum_{i=1}^n X_{ij}
+            \Bar{x}_j = \frac{1}{n}\Sigma_{i=1}^n X_{ij}
         \end{equation*}
         \item from the $\Bar{x}$ one can determine the mean matrix frrom the following:
         \begin{equation*}
@@ -685,11 +698,11 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
             CV = VD \Rightarrow C = VDV^* \Rightarrow D = V^*CV
         \end{equation*}
 
-        Plugging the equation above related $B$ to $C$ and using SVD ($B = U\sum V^*$), one can derive the following:
+        Plugging the equation above related $B$ to $C$ and using SVD ($B = U\Sigma V^*$), one can derive the following:
         \begin{align*}
             C &= \frac{1}{n-1}B^*B \\
-            &= \frac{1}{n-1}V\left(\sum \right)^2V^* \\
-            D &= \frac{1}{n-1}\left(\sum \right)^2
+            &= \frac{1}{n-1}V\left(\Sigma \right)^2V^* \\
+            D &= \frac{1}{n-1}\left(\Sigma \right)^2
         \end{align*}
 
         One can relate the singular values to the variance from the diagonal matrix $D$ using the following equation:
@@ -703,12 +716,12 @@ Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the 
         \begin{itemize}
             \item When working with the population dataset:
             \begin{equation*}
-                C = \frac{1}{n}B^*B = \tilde{B}^*\tilde{B} = V(\sum)^2V^*
+                C = \frac{1}{n}B^*B = \tilde{B}^*\tilde{B} = V(\Sigma)^2V^*
             \end{equation*}
             Where $\tilde{B} = \frac{1}{\sqrt{n}}B$ because $\left(\frac{1}{\sqrt{n}}B\right)^*\left(\frac{1}{\sqrt{n}}B\right) = \frac{1}{n}B^*B$
             \item When working with the sample dataset:
             \begin{equation*}
-                C = \frac{1}{n-1}B^*B = \tilde{B}^*\tilde{B} = V(\sum)^2V^*
+                C = \frac{1}{n-1}B^*B = \tilde{B}^*\tilde{B} = V(\Sigma)^2V^*
             \end{equation*}
             Where $\tilde{B} = \frac{1}{\sqrt{n-1}}B$ because $\left(\frac{1}{\sqrt{(n-1)}}B\right)^*\left(\frac{1}{\sqrt{(n-1)}}B\right) = \frac{1}{(n-1)}B^*B$
         \end{itemize}
@@ -880,7 +893,7 @@ Code:
 \begin{itemize}
     \item An important thing to note about SVD is that it is \textbf{fundamentally geometric}. 
     
-    In other words, rotating, stretching, compressing, or translating the vectors in matrix $X$ (with regards to the equation $X = U\sum V^*$) impacts the matrices $U$, $\sum$, and $V$. Specifically, rotations can impact the left and right singular matrices ($U$ and $V$ respectively), while stretching or compressing (changing the magnitude) the vectors of matrix $X$ can cause changes to $\sum$.
+    In other words, rotating, stretching, compressing, or translating the vectors in matrix $X$ (with regards to the equation $X = U\Sigma V^*$) impacts the matrices $U$, $\Sigma$, and $V$. Specifically, rotations can impact the left and right singular matrices ($U$ and $V$ respectively), while stretching or compressing (changing the magnitude) the vectors of matrix $X$ can cause changes to $\Sigma$.
 
     \item Because SVD is sensitive to the alignment of the data, SVD can't be used on data that hasn't been heavily preprocessed.
 \end{itemize}
@@ -941,7 +954,7 @@ Code:
 
         Once one determines $Y$, one can perform SVD on $Y$:
         \begin{equation*}
-            Y = U_Y\sum V^*
+            Y = U_Y\Sigma V^*
         \end{equation*}
         
         \item Using $U_Y$ and $Q$, one can determine the high-dimensional left singular vectors, $U$.
@@ -1067,7 +1080,7 @@ Code:
         
         \item The inner product of two N-way tensors (for example, $\mathbb{A}$ and $\mathbb{B}$) is shown below
         \begin{equation*}
-            \left < \mathbb{A}, \mathbb{B}\right> = \sum_i a_ib_i
+            \left < \mathbb{A}, \mathbb{B}\right> = \Sigma_i a_ib_i
         \end{equation*}
         Where: $\mathbb{A}$ is of size $I_1\times I_2 \times \cdots \times I_N$ and $i = (i_1, i_2, \cdots, i_n)$
 
@@ -1099,7 +1112,7 @@ Code:
             \item the meaning of $I_1 \times I_2 \times \cdots \times I_N$ is to represent the number of modes (aka. dimensions) of the tensor
             \item the \textbf{CANDECOMP/PARAFAC (CP)} decomposition is a way to express a tensor as a sum of rank-one tensors.
             \begin{equation*}
-                \mathcal{X} = \sum^R_{r=1}  a_r \circ b_r \circ c_r
+                \mathcal{X} = \Sigma^R_{r=1}  a_r \circ b_r \circ c_r
             \end{equation*}
             Where $A \in \mathbb{R}^{I_1\times R}$, $B \in \mathbb{R}^{I_2\times R}$, and $C \in \mathbb{R}^{I_3\times R}$
 
@@ -1107,7 +1120,7 @@ Code:
         \end{itemize}
         \item the overall equation is the following:
         \begin{equation*}
-            \mathbb{M} = \sum^R_{r=1} \lambda_r ma_r^{(1)} \circ ma_r^{(2)} \circ \cdots \circ ma_r^{(N)}
+            \mathbb{M} = \Sigma^R_{r=1} \lambda_r ma_r^{(1)} \circ ma_r^{(2)} \circ \cdots \circ ma_r^{(N)}
         \end{equation*}
         where 
         \begin{conditions}
@@ -1150,7 +1163,7 @@ Code:
     
     \item because the magnitude of the inner product increases as number of data points to the vector increases, a normalization parameter $\frac{b-a}{n-1}$ is added:
     \begin{equation*}
-        \frac{b-a}{n-1}\left<f(x), g(x) \right> = \sum_{k=1}^n f(x_k)\Bar{g}(x_k)\Delta x
+        \frac{b-a}{n-1}\left<f(x), g(x) \right> = \Sigma_{k=1}^n f(x_k)\Bar{g}(x_k)\Delta x
     \end{equation*}
     where $b = x_n$ and $a = x_1$. The above equation is also a Reimann approximation of the continuous functions. As $\Delta x \rightarrow \infty$ the approximate will equal the exact result.
 
@@ -1186,7 +1199,7 @@ Code:
     \end{itemize}
     \item Example: If $f(x)$ is $2\pi$-periodic, it can be written as:
     \begin{equation*}
-        f(x) = \frac{a_0}{2} + \sum^\infty_{k=1} (a_kcos(kx)+ b_ksin(kx))
+        f(x) = \frac{a_0}{2} + \Sigma^\infty_{k=1} (a_kcos(kx)+ b_ksin(kx))
     \end{equation*}
     Where:
     \begin{equation*}
@@ -1209,7 +1222,7 @@ Code:
     Where $\Vert cos(kx) \Vert^2 = \Vert sin(kx) \Vert^2 = \pi$. This can be easily verified by integrating $(cos(kx))^2$ and $(sin(kx))^2$ from $-\pi$ to $\pi$.
     \item How to represent a Fourier series of an L-periodic function on $\left[0, L\right)$:
     \begin{equation*}
-        f(x) = \frac{a_0}{2} + \sum^\infty_{k=1}\left(a_k cos\left(\frac{2\pi kx}{L} \right) + b_k sin\left(\frac{2\pi kx}{L} \right)\right)
+        f(x) = \frac{a_0}{2} + \Sigma^\infty_{k=1}\left(a_k cos\left(\frac{2\pi kx}{L} \right) + b_k sin\left(\frac{2\pi kx}{L} \right)\right)
     \end{equation*}
     Where:
     \begin{equation*}
@@ -1227,9 +1240,9 @@ Code:
         \item $c_k = a_k + ib_k$
     \end{itemize}
     \begin{align*}
-        f(x) &= \sum^{\infty}_{k=-\infty}c_ke^{ikx} \\
-        &= \sum^{\infty}_{k=-\infty} (a_k + ib_k)(cos(kx) + isin(kx))\\
-        &=(a_0 + ib_0)\sum^{\infty}_{k=1} \left[ (a_{-k} + a_k)cos(kx) +(b_{-k} - b_k)sin(kx) \right] + i\sum^{\infty}_{k=1}  \left[ (b_{-k} + b_k)cos(kx) +(a_{-k} - a_k)sin(kx) \right]\\
+        f(x) &= \Sigma^{\infty}_{k=-\infty}c_ke^{ikx} \\
+        &= \Sigma^{\infty}_{k=-\infty} (a_k + ib_k)(cos(kx) + isin(kx))\\
+        &=(a_0 + ib_0)\Sigma^{\infty}_{k=1} \left[ (a_{-k} + a_k)cos(kx) +(b_{-k} - b_k)sin(kx) \right] + i\Sigma^{\infty}_{k=1}  \left[ (b_{-k} + b_k)cos(kx) +(a_{-k} - a_k)sin(kx) \right]\\
     \end{align*}
     If $f(x)$ is real then $a_{-k} = a_k$ and $b_{-k} = b_k$
     \item Checking if $\psi_k = e^{ikx}$ is orthogonal
@@ -1255,7 +1268,7 @@ Code:
     \item To summarize, the Fourier series represents a function $f(x)$ as an infinite sum of sine and cosine functions, effectively transforming it into a new basis in function space. Furthermore, the Fourier series is only valid for a function that is periodic from $[-L, L]$. The Fourier Transform (discussed in the next section) will generalize this for non-periodic functions.
     \item Example:
     \begin{equation*}
-        f(x) = \sum_{k=-\infty}^{\infty} c_k\psi_k(x) = \frac{1}{2\pi} \sum_{k=-\infty}^{\infty} \left<f(x), \psi_k (x) \right>psi_k (x)
+        f(x) = \Sigma_{k=-\infty}^{\infty} c_k\psi_k(x) = \frac{1}{2\pi} \Sigma_{k=-\infty}^{\infty} \left<f(x), \psi_k (x) \right>psi_k (x)
     \end{equation*}
     Where $\psi_k(x) = e^{ikx} = cos(kx) + isin(kx)$ and $c_k = (1/(2\pi))\left<f(x),\psi_k(x)\right>$. The factor, $1/(2\pi)$, normalizes the projection by the square of the norm of $\psi_k$ ($\Vert \psi_k \Vert^2 = 2\pi$). The equation provided above is similar to converting a vector from one coordinate system to another (changing the basis), which is represented by the equation provided:
     \begin{align*}
@@ -1268,11 +1281,11 @@ Code:
 \begin{itemize}
     \item Restatement of the general formula for Fourier Series ($[-L,L]$):
     \begin{equation*}
-        f(x) = \frac{a_0}{2}+\sum_{k=1}^\infty \left[ a_kcos\left(\frac{k\pi x}{L}\right) + b_ksin\left(\frac{k\pi x}{L}\right) \right] = \sum_{k=-\infty}^\infty c_ke^{i2\pi kx/L}
+        f(x) = \frac{a_0}{2}+\Sigma_{k=1}^\infty \left[ a_kcos\left(\frac{k\pi x}{L}\right) + b_ksin\left(\frac{k\pi x}{L}\right) \right] = \Sigma_{k=-\infty}^\infty c_ke^{i2\pi kx/L}
     \end{equation*}
     \item if one took the limit $L\rightarrow \infty$, the discrete frequencies (where, $w_k = \frac{k\pi}{L}$ in this context) become continuous, and one can get the following equation:
     \begin{equation*}
-        f(x) = lim_{\Delta w \rightarrow 0} \sum_{k=-\infty}^{\infty} \frac{\Delta w}{2\pi} \left[\int^{\pi/\Delta w}_{-\pi/\Delta w} f(\zeta)e^{-ik\Delta w\zeta} d\zeta \right] e^{ik\Delta wx}
+        f(x) = lim_{\Delta w \rightarrow 0} \Sigma_{k=-\infty}^{\infty} \frac{\Delta w}{2\pi} \left[\int^{\pi/\Delta w}_{-\pi/\Delta w} f(\zeta)e^{-ik\Delta w\zeta} d\zeta \right] e^{ik\Delta wx}
     \end{equation*}
     where, 
     \begin{equation*}
@@ -1345,11 +1358,11 @@ Code:
 \begin{itemize}
     \item Formulation of the DFT:
     \begin{equation*}
-        \Hat{f}_k = \sum^{n-1}_{j=0} f_je^{-i2\pi jk/n}
+        \Hat{f}_k = \Sigma^{n-1}_{j=0} f_je^{-i2\pi jk/n}
     \end{equation*}
     \item The formulation of the inverse DFT (iDFT):
     \begin{equation*}
-        f_k = \frac{1}{n}\sum^{n-1}_{j=0}\Hat{f}_je^{i2\pi jk/n}
+        f_k = \frac{1}{n}\Sigma^{n-1}_{j=0}\Hat{f}_je^{i2\pi jk/n}
     \end{equation*}
     \item Essentially, the DFT is a \textbf{linear operator} that converts data points in $f$ to $\Hat{f}$ (in the frequency domain). The output vector ($\Hat{f}$) contains the Fourier coefficients for the input vector, $f$, and the DFT matrix $F$ is a unitary Vandermonde matrix.
     \begin{equation*}
@@ -1619,7 +1632,7 @@ Code:
         \end{equation*}
         \item the inverse DWT (iDWT) equation:
         \begin{equation*}
-            f(t) = \sum^\infty_{j,k =-\infty} \left<f(t), \psi_{j,k}\right>\psi_{j,k}(t)
+            f(t) = \Sigma^\infty_{j,k =-\infty} \left<f(t), \psi_{j,k}\right>\psi_{j,k}(t)
         \end{equation*}
         \textit{Explicit computation of DWT is pretty involved...}
     \end{enumerate}
@@ -1731,7 +1744,7 @@ Code:
     \begin{itemize}
         \item A basis in this context is a set of vectors that can represent the signal (they are essentially the set of vectors/functions that can represent any other vector/function within the vector/function space).
         \begin{equation*}
-            x(t) =  \sum_i \alpha_i\phi_i(t)
+            x(t) =  \Sigma_i \alpha_i\phi_i(t)
         \end{equation*}
         where,
         \begin{conditions}
@@ -1804,7 +1817,7 @@ Code:
         \end{equation*}
         where,
         \begin{equation*}
-            \Vert s \Vert_1 = \sum^n_{k=1} |s_k|
+            \Vert s \Vert_1 = \Sigma^n_{k=1} |s_k|
         \end{equation*}
         \textit{The $l_1$-norm is also known as the taxi-norm or manhattan-norm.}
         \item The conditions that $C$ needs to be in to use the $l_1$-minimization is the following:
