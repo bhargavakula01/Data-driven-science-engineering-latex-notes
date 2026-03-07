@@ -55,7 +55,7 @@
 \begin{document} 
 
 \noindent  Bhargav Akula Ramesh Kumar\\
-\textbf{Date: } Nov 16, 2024\\
+\textbf{Date: } \today
 \begin{center}
     \textbf{Notes on Data-Drive Science and Engineering}
 \end{center}
@@ -63,10 +63,13 @@
 \section{Singular Value Decomposition (SVD)}
 
 \begin{itemize}
-    \item Definition SVD: Computational-based method of extracting patterns from high-dimensional data sets
+    \item \textbf{Definition of SVD:} Computational-based method of extracting patterns from high-dimensional data sets
     \begin{itemize}
-        \item This is done by extracting "low rank" (number of linearly independent columns or dimension of the column space) approximations for a matrix and performing an inverse/pseudo-inverse to determine a solution to a system of equations in the form $Ax = b$
-        \item **\textbf{Low-rank approximations of a matrix}** refer to techniques used to approximate a given matrix \( A \) by another matrix \( \tilde{A} \) that has a lower rank than \( A \).
+        \item This is done by extracting "low rank" approximations for a matrix and performing an inverse/pseudo-inverse to determine a solution to a system of equations in the form $Ax = b$
+        \begin{itemize}
+            \item \textbf{Rank}: number of linearly independent columns or dimension of the column space
+            \item \textbf{Low-rank approximations of a matrix} refer to techniques used to approximate a given matrix \( A \) by another matrix \( \tilde{A} \) that has a lower rank than \( A \).
+        \end{itemize}
         \item \href{https://www.youtube.com/watch?v=CpD9XlTu3ys}{What is SVD - Youtube Video}
     \end{itemize}
     \item In other words, it provides a low-dimensional approximation of high-dimensional data through dominant patterns (DATA-DRIVEN APPROACH!)
@@ -91,8 +94,8 @@
         \begin{itemize}
             \item \textit{The conjugate transpose is derived by first taking the transpose of the matrix and then determining the complex conjugate for each value in the matrix. For matrices in the real space, the conjugate transpose is the same as the transpose of the matrix.}
         \end{itemize}
-        \item the eigendecomposition of $A^TA$ allows one to determine $V$
-        \item the eigendecomposition of $AA^T$ allows one to determine $U$
+        \item the eigendecomposition of $A^*A$ allows one to determine $V$
+        \item the eigendecomposition of $AA^*$ allows one to determine $U$
         \item if $X$ doesn't have full rank, one can use the \textbf{economy SVD}:
         \begin{equation*}
             X = U\sum V^* = \begin{bmatrix} \hat U & \hat U^\perp\end{bmatrix}\begin{bmatrix} \hat \sum \\ 0 \end{bmatrix}V^*
@@ -117,15 +120,15 @@
             \end{itemize}
             QR factorization is useful in various applications such as solving linear systems, least squares problems, and eigenvalue problems. The QR factorization can be found using Gram-Schmidt, Householder transformations, or Givens rotations.
         \end{itemize}
-        \item What is a Bidiagonal Matrix?
+        \item \textbf{From ChatGPT:} What is a Bidiagonal Matrix?
         \begin{itemize}
-            \item A **bidiagonal matrix** is a type of square matrix that has non-zero elements only on the main diagonal and either the superdiagonal (the diagonal just above the main diagonal) or the subdiagonal (the diagonal just below the main diagonal). In other words, a bidiagonal matrix has the following structure:
+            \item A bidiagonal matrix is a type of square matrix that has non-zero elements only on the main diagonal and either the superdiagonal (the diagonal just above the main diagonal) or the subdiagonal (the diagonal just below the main diagonal). In other words, a bidiagonal matrix has the following structure:
             \begin{enumerate}
                 \item The elements on the main diagonal can be any values.
                 \item The elements directly above or below the main diagonal (depending on whether it is an upper or lower bidiagonal matrix) can also be non-zero, but all other elements are zero.
             \end{enumerate}
 
-            \item There are two types of bidiagonal matrices:
+            \item There are two types of **bidiagonal matrices**:
             \begin{enumerate}
                 \item **Upper bidiagonal matrix**: Non-zero elements appear on the main diagonal and the super-diagonal (above the main diagonal), while all other elements are zero.
                \[
@@ -170,7 +173,7 @@
     Where,
     \begin{conditions}
         \tilde{U} & first $r$ columns of matrix U \\
-        \tilde{V} & first $r$ columns of matrix V \\
+        \tilde{V} & first $r$ columns of matrix V (or first $r$ rows of $V^*$) \\
         \tilde{\sum} & $r$x$r$ sub-block of matrix $\sum$
     \end{conditions}
 \end{itemize}
@@ -186,12 +189,13 @@
         \end{equation*}
         \begin{itemize}
             \item \textit{As the rank $r$ increases, $\tilde{X}$ will start to approach $X$}
+            \item By minimizing the error, one will get to the truncated SVD
         \end{itemize}
-        \item One can quantify the error of the Eckart-Young theorm:
+        \item One can quantify the error of the Eckart-Young theorem:
         \begin{equation*}
             \Vert X - \tilde{X} \Vert^2_F = \sum^m_{k=r+1} \sigma^2_k 
         \end{equation*}
-        \item To calculate relative error, one can use the following equation. This is recommended as error scales with the size \textit{(as larger matrices have more singular values and can result in greater total error)} and magnitude \textit{(if singular values scale linearly with magnitude of $X$ the error scales quadratically with magnitude of $X$ as we are summing the square of singular values)} of $X$.
+        \item To calculate relative error, one can use the following equation. This is recommended as error scales with the size \textit{(as larger matrices have more singular values and can result in greater total error)} and magnitude \textit{(if singular values scale linearly with magnitude of $X$, the error scales quadratically with magnitude of $X$ as we are summing the square of singular values)} of $X$.
         \begin{equation*}
             \text{Relative Error} = \frac{\Vert X - \tilde{X} \Vert^2_F}{\Vert X \Vert^2_F}
         \end{equation*}
@@ -201,7 +205,7 @@
         argmin_{\tilde{X}, s.t rank(\tilde{X})=r} \Vert X - \tilde{X} \Vert_2 = \tilde{U}\tilde{\sum}\tilde{V}^*
     \end{equation*}
     \begin{itemize}
-        \item The 2-norm of matrix X is induced by the vector 2-norm. This is to determine the maximum possible stretching that matrix X can apply to any unit vector.
+        \item The 2-norm of matrix X is induced by the vector 2-norm. This is to determine the maximum possible stretching that matrix X can apply to any unit vector. This is known as the spectral norm
         \begin{equation*}
             \Vert X \Vert_2 = \text{max}_{v \neq 0}\frac{\Vert Xv \Vert_2}{\Vert v \Vert_2}
         \end{equation*}
@@ -211,7 +215,7 @@
             \begin{itemize}
                \item Applies to vectors
                \item $\|x\|_2 = \sqrt{\sum_{i=1}^n |x_i|^2}$
-               \item Measures length/magnitude of a vector
+               \item Measures the length/magnitude of a vector
                \item While the above equation is for a 2-norm, this can be done for any value. 
             \end{itemize}
             
@@ -229,8 +233,8 @@
             \begin{itemize}
                 \item Applies to matrices
                 \item $\|A\|_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} |A_{ij}|^2}$
-                \item One can generalize the Frobenius norm for an entrywise p-norm; however, on the entriwise 2-norm is referred to as the "Frobenius Norm."
-                \item \textit{Frobenius norm} is not a matrix norrm but more of a entrywise norm for matrices.
+                \item One can generalize the Frobenius norm for an entrywise p-norm; however, the entrywise 2-norm is referred to as the "Frobenius Norm."
+                \item \textit{Frobenius norm} is not a matrix norm but more of an entrywise norm for matrices.
             \end{itemize}
             
             \item \textit{The connection is that the spectral norm is induced by the Euclidean norm - it measures how much a matrix can maximally stretch a vector, where both the input and output vectors are measured using the Euclidean norm.}
