@@ -403,12 +403,12 @@ Code to perform image compression using SVD:
     \item A interesting, yet useful, property of SVD is when you perform a left or right unitary transformation (an example is discrete fourier transform, or $\mathbb{F}$) to either the $U$ or $V$ matrices, it does not impact the terms in the SVD.
     \item This invariance is attributed to the fact that unitary transformation only rotate a vector but do not move its inner product (aka. dot product)
 
-    Left Unitary Transformation:
+    Left Unitary Transformation of $X$:
     \begin{equation*}
         Y = CX = CU_X\Sigma_XV_X^*
     \end{equation*}
 
-    Right Unitary Transformation:
+    Right Unitary Transformation of $X$:
     \begin{equation*}
         Y = XC^* = U_X\Sigma_XV_X^*C^*
     \end{equation*}
@@ -441,21 +441,21 @@ Code to perform image compression using SVD:
     \begin{itemize}
         \item The \textbf{column space} of matrix $A$ is the \textbf{span} of the columns of the columns of $A$. The \textbf{span} is the number of linearly independent vectors. The \textbf{column space} is also known as the \textbf{range}.
         \begin{itemize}
-            \item In SVD, the column space of $A$ in the equation $A = \tilde{U}\tilde{\Sigma}\tilde{V}^*$ is equal to the column space of $\tilde{U}$ where $\tilde{U}$ is a truncated version of $U$ based on the rank of $X$.
+            \item In SVD, the column space of $A$ in the equation $A = \tilde{U}\tilde{\Sigma}\tilde{V}^*$ is equal to the column space of $\tilde{U}$ where $\tilde{U}$ is a truncated version of $U$ based on the rank of $A$.
             \item The orthogonal complement to the $col(A)$ is $ker(A^*)$ and is given by the column space of $\hat U^\perp$.
         \end{itemize}
 
         \item The \textbf{row space} of $A$ is the span of the rows of $A$ ($\text{row}(A) = \text{col}(A^*)$). \newline
         \begin{itemize}
-            \item In SVD, the row space of $A$ (where $A = \tilde{U}\tilde{\Sigma}\tilde{V}^*$), is equal to the row space of $\tilde{V}^*$ or the column space of $\tilde{V}$. Similarly, $\tilde{V}$ is a truncated version of $V$ based on the rank of $X$.
-            \item the orthogonal complement of $row(A)$ is $ker(A)$ (null space) and is derived from $col(\hat V^\perp$
+            \item In SVD, the row space of $A$ (where $A = \tilde{U}\tilde{\Sigma}\tilde{V}^*$), is equal to the row space of $\tilde{V}^*$ or the column space of $\tilde{V}$. Similarly, $\tilde{V}$ is a truncated version of $V$ based on the rank of $A$.
+            \item the orthogonal complement of $row(A)$ is $ker(A)$ (null space) and is derived from $col(\hat V^\perp$)
         \end{itemize}
 
-        \item to summarize, if $b \in col(A)$ and $dim(ker(A)) \neq 0$ then there is an infinite number of solutions, $x$. If $b \notin col(A)$ then there are no solutions. 
+        \item \textbf{Summary:} if $b \in col(A)$ and $dim(ker(A)) \neq 0$ then there is an infinite number of solutions, $x$. If $b \notin col(A)$ then there are no solutions. 
         
-        \textbf{Essentially, the $dim(ker(A))$ is the NUMBER OF FREE VARIABLES! So if $dim(ker(A))$ is positive, then the number of equations is less than the number of unknowns.}
+        Essentially, the $dim(ker(A))$ is $n - rank(A)$ where $n$ is the number of columns in $A$. If $dim(ker(A)) > 0$ then the number of variables is greater than constraints. If $dim(ker(A)) = 0$ then number of variables is equal to the number of constraints. 
 
-        \item The fundamental subspaces follow the following equations:
+        \item The fundamental subspaces follow the following equations (where $A$ is $\mathbb{R}^{m\times n}$):
         \begin{align*}
             col(A) \oplus ker(A^*) = \mathbb{R}^n \\
             col(A^*) \oplus ker(A) = \mathbb{R}^n
