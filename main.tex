@@ -468,7 +468,7 @@ Code to perform image compression using SVD:
 \begin{itemize}
     \item What is the \textbf{condition number?}:
     \begin{itemize}
-        \item represents how sensitive matrix multiplication and matrix inversion are to changes to the input \textit{(useful information in APC - Advanced Process Control - development)}.
+        \item represents how sensitive matrix multiplication and matrix inversion are to changes to the input \textit{(useful information in Model Predictive Control development)}.
         \item Equation to calculate the condition number:
         \begin{equation*}
             \kappa(A) = \frac{\sigma_{max}(A)}{\sigma_{min}(A)}
@@ -480,7 +480,7 @@ Code to perform image compression using SVD:
             \sigma_{min} & Min singular value \\
             A & Input matrix
         \end{conditions}
-        \item in APC development conditions value analysis is used in determining colinearities within the RGA (relative gain array). Near colinearities or colinearities can cause cycling to occur within a MPC (model predictive controller) and thus can cause equipment damage at a plant.
+        \item in APC development conditions value analysis is used in determining colinearities within the gain matrix. Near colinearities can cause cycling to occur within a MPC (model predictive controller) and thus can cause equipment damage at a plant.
     \end{itemize}
     \item How does one illustrate the effect of a large condition value:
     \begin{itemize}
@@ -488,7 +488,7 @@ Code to perform image compression using SVD:
         \begin{equation*}
             A(x + \epsilon_x) = b + \epsilon_b
         \end{equation*}
-        \item If we assume a worst case scenario where $\epsilon_x$ is aligned with the max singular value, $\sigma_{max}$, and the input, $x$, is aligned with the minimum singular value, $\sigma_{min}$, one will get the following equation:
+        \item If we assume a worst case scenario when solving for $b$, where $\epsilon_x$ is aligned with the singluar vector corresponding to the max singular value, $\sigma_{max}$, and the input, $x$, is aligned with the singular vector corresponding to the minimum singular value, $\sigma_{min}$, one will get the following equation:
         \begin{equation*}
             A(x + \epsilon_x) = \sigma_{min}x + \sigma_{max}\epsilon_x
         \end{equation*}
@@ -497,7 +497,13 @@ Code to perform image compression using SVD:
             \sigma_{min}x & $b$ \\
             \sigma_{max}\epsilon_x & $\epsilon_b$
         \end{conditions}
-        \item From the above equation, the output signal-to-noise ratio ($\frac{b}{\epsilon_b}$) is equal to $\frac{x}{\epsilon_x} \cdot \frac{\sigma_{min}}{\sigma_{max}}$ 
+        \item From the above equation, the output signal-to-noise ratio ($\frac{b}{\epsilon_b}$) is equal to $\frac{x}{\epsilon_x} \cdot \frac{\sigma_{min}}{\sigma_{max}}$. This shows that the output signal-to-noise ratio is degraded by a factor equal to the condition number (under the worst case scenario).
+        \item If we assume the worst case scenario when solving for $x$ given an imperfect $b$, where $\epsilon_b$ is aligned with the singular vector corresponding to the max singular value $\sigma_{max}$ and $b$ is aligned with the singular vector corresponding to the min singular value $\sigma_{min}$
+        \begin{equation*}
+            x + \epsilon_x \approx A^{-1}\left( b + \epsilon_b \right) = \frac{1}{\sigma_{max}}b + \frac{1}{\sigma_{min}}\epsilon_b
+        \end{equation*}
+
+        As we can see here, the input signal-to-noise ratio (as we are solving for $x$ in this scenario) is degraded by a factor equal to the condition number.
     \end{itemize}
     \item One approach to mitigating a large condition number is to truncate the SVD more aggressively; however, this comes at the cost of decreasing the size of the subspace $\tilde{U}$ which is used to approximate the output. In other words, by performing an aggressive truncation, the approximate result (that one would get from the aggressive truncation of SVD) may lose important information of the higher dimensional system and therefore would not be a good model to represent the higher dimensional system.
 \end{itemize}
@@ -508,7 +514,7 @@ Code to perform image compression using SVD:
     \item Regressions are important to understand how one variable relates to another, if any exists. SVD is a method to solve a linear system of equations (such as $Ax=b$) particularly when $A$ isn't square or full-rank
     \item Example:
     \begin{itemize}
-        \item One can use a pseudo inverse to determine the least-squares solution, as shown in the equation below:
+        \item One can use a pseudo inverse to determine the least-squares solution, as shown in the equation below (assuming that $a$ and $b$ are column vectors):
         \begin{align*}
             b &= ax = \tilde{U}\tilde{\Sigma}\tilde{V}^*x \\
             x &= \tilde{V}\tilde{\Sigma}^{-1}\tilde{U}^*b
@@ -523,115 +529,22 @@ Code to perform image compression using SVD:
         \begin{equation*}
             x = \frac{a^*\cdot b}{\Vert a \Vert_2^2}
         \end{equation*}
+        \item \textbf{Note:} If $a$ is a column vector then $u = \frac{a}{\Vert a \Vert_2}$ because of the following:
+        \begin{align*}
+            \Vert a \Vert_2 &= \Vert \sigma u \Vert_2 \\
+            &= |\sigma| \Vert u \Vert_2
+        \end{align*}
+        Because $\Vert u \Vert_2 = 1$
+        \begin{align*}
+            \Vert a \Vert_2 = |\sigma|
+        \end{align*}
+        Therefore,
+        \begin{align*}
+            a &= \Vert a \Vert_2 u \\
+            u &= \frac{a}{\Vert a \Vert_2}
+        \end{align*}
     \end{itemize}
-    \item \textit{Interesting things happen if $a$ is a row vector rather than column vector}
-    \begin{itemize}
-        \item \textbf{What if $a$ is row vector (information provided by ChatGPT!)}: \newline
-
-        If \( a \) is a **row vector** instead of a column vector, the concept of the Singular Value Decomposition (SVD) still applies, but we need to make some adjustments for the specific case where \( M = a \) is a row vector.
-
-Let’s walk through this step by step.
-
----
-
-### **1. Matrix \( M \) as a Row Vector:**
-
-Now, suppose \( M \) is a \( 1 \times n \) **row vector**:
-\[
-M = \begin{bmatrix} a_1 & a_2 & \dots & a_n \end{bmatrix}.
-\]
-
-This is different from the previous case where \( a \) was a column vector.
-
----
-
-### **2. SVD for a Row Vector:**
-
-For a row vector \( M \), the SVD is:
-\[
-M = U \Sigma V^T,
-\]
-where:
-- \( U \) is an orthogonal matrix (containing the left singular vectors),
-- \( \Sigma \) is a diagonal matrix (containing the singular values),
-- \( V \) is an orthogonal matrix (containing the right singular vectors).
-
-In the case of a \( 1 \times n \) row vector, \( M \) has a single nonzero singular value, corresponding to the nonzero eigenvalue of \( M^T M \).
-
----
-
-### **3. Compute \( M^T M \):**
-
-To understand how the SVD works, let’s start by computing \( M^T M \), which is the matrix involved in finding the right singular vectors in \( V \).
-
-- If \( M \) is a row vector of size \( 1 \times n \), then \( M^T \) is an \( n \times 1 \) column vector.
-- So, \( M^T M \) is an \( n \times n \) matrix:
-\[
-M^T M = \begin{bmatrix} a_1 \\ a_2 \\ \dots \\ a_n \end{bmatrix} \begin{bmatrix} a_1 & a_2 & \dots & a_n \end{bmatrix} = \begin{bmatrix} a_1^2 & a_1 a_2 & \dots & a_1 a_n \\ a_2 a_1 & a_2^2 & \dots & a_2 a_n \\ \vdots & \vdots & \ddots & \vdots \\ a_n a_1 & a_n a_2 & \dots & a_n^2 \end{bmatrix}.
-\]
-
-This is an \( n \times n \) **rank-1** matrix, just like the case where \( a \) was a column vector. The eigenvalue decomposition of \( M^T M \) will give us the right singular vectors in \( V \).
-
----
-
-### **4. Eigenvalue Decomposition of \( M^T M \):**
-
-- Since \( M^T M \) is a rank-1 matrix, it has **one nonzero eigenvalue**, which is:
-  \[
-  \lambda = \|a\|_2^2 = \Sigma_{i=1}^n a_i^2.
-  \]
-
-- The eigenvector corresponding to this nonzero eigenvalue is the normalized version of the row vector \( a \):
-  \[
-  v_1 = \frac{a^T}{\|a\|_2}.
-  \]
-
-- The other \( n-1 \) eigenvectors of \( M^T M \) are orthogonal to \( v_1 \) and correspond to the zero eigenvalues. These can be any orthonormal vectors in the null space of \( M^T M \).
-
-Thus, \( V \), the matrix of right singular vectors, will have:
-- The first column \( v_1 = \frac{a^T}{\|a\|_2} \),
-- The remaining columns are orthonormal vectors corresponding to the zero eigenvalues.
-
----
-
-### **5. Compute \( MM^T \):**
-
-Next, we compute \( MM^T \), which will give us the left singular vectors \( U \).
-
-- \( M \) is a \( 1 \times n \) row vector, so \( MM^T \) is a \( 1 \times 1 \) scalar matrix:
-\[
-MM^T = a a^T = \|a\|_2^2.
-\]
-
-This is just a scalar (the squared \( \ell_2 \)-norm of \( a \)).
-
-- The eigenvector corresponding to this eigenvalue is simply \( u_1 = 1 \) (since it's a \( 1 \times 1 \) matrix).
-
-Thus, in this case, the matrix \( U \) is a \( 1 \times 1 \) matrix, which is just the scalar \( 1 \).
-
----
-
-### **6. Singular Values:**
-
-The singular values are the square roots of the eigenvalues of \( M^T M \) (or \( MM^T \), since they are the same in this case). The nonzero singular value is:
-\[
-\sigma = \|a\|_2.
-\]
-
-Thus, the matrix \( \Sigma \) will have the singular value \( \|a\|_2 \) on the diagonal, and all other values will be zero.
-
----
-
-### **Summary for Row Vector \( a \):**
-
-- \( M = a \) is a row vector \( 1 \times n \).
-- The **right singular vectors** (columns of \( V \)) are:
-  - The first column of \( V \), \( v_1 = \frac{a^T}{\|a\|_2} \), corresponds to the eigenvector of \( M^T M \).
-  - The remaining columns of \( V \) are orthonormal vectors corresponding to the zero eigenvalues of \( M^T M \).
-  
-- The **left singular vector** \( U \) is a \( 1 \times 1 \) matrix (since \( MM^T \) is a scalar), and it is just \( 1 \).
-
-    \end{itemize}
+    \item 
 \end{itemize}
 
 \subsubsection*{Multi-linear Regression}
