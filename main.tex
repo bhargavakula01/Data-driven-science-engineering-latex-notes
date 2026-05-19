@@ -461,6 +461,40 @@ Code to perform image compression using SVD:
             col(A^*) \oplus ker(A) = \mathbb{R}^n
         \end{align*}
     \end{itemize}
+    \item In an over-determined system where no solution exists, we generally like the find the solution $x$ that minimizes the sum of squared errors ($\Vert Ax - b \Vert_2^2 $). For an under-determined system where infinite solutions exist, we generally like to find the solution that minimizes the norm $\Vert x \Vert_2$ (aka. norm-minimization).
+    \begin{itemize}
+        \item This can be solved by using the \textbf{Moore-Penrose left Pseudoinverse}
+        
+        \textbf{Note:} the tilde is representing that this is part of the truncated SVD
+        \begin{align*}
+            A^{+} &\triangleq \tilde{V}\tilde{\Sigma}^{-1}\tilde{U}^*\\
+            A^{+}A &= \tilde{V}\tilde{V}^*
+        \end{align*}
+
+        \textbf{Note:} Important to point out that the $A^{+}A$ (and $\tilde{V}\tilde{V}^*$) is only equal to identity if the truncated SVD captures all of the non-zero singular values. 
+        
+        The Moore-Penrose left Pseudoinverse can be used to determine the least-squares and minimum-norm solution
+        \begin{align*}
+            A^{+}A\tilde{x} &= A^{+}b \\
+            \tilde{x} = \tilde{V}\tilde{\Sigma}^{-1}\tilde{U}^*b
+        \end{align*}
+
+        plugging it back into $Ax = b$
+        \begin{align*}
+            A\tilde{x} &= \tilde{U}\tilde{\Sigma}\tilde{V}^*\tilde{V}\tilde{\Sigma}^{-1}\tilde{U}^*b \\
+            &= \tilde{U}\tilde{U}^*b
+        \end{align*}
+
+        \textbf{Note:} $\tilde{U}\tilde{U}^*$ does not equal the identity matrix (as it a truncated matrix and therefore doesn't span $\mathbb{R}^n$) but rather a projection onto the column space of \tilde{U}. $\tilde{x}$ will only be a exact solution if $b$ is in the column space of $\tilde{U}$ and therefore in the column space of $A$. On the other hand, $\tilde{U}^*\tilde{U} = I_{n\times n}$.
+        \begin{itemize}
+            \item \textit{An aside}: In general for a matrix, $Q$, with orthonormal columns:
+            \begin{equation*}
+                P = QQ^*
+            \end{equation*}
+            where $P$ is the orthogonal projection onto the column space of Q.
+        \end{itemize}
+    \end{itemize}
+    
 \end{itemize}
 
 \subsubsection*{Condition Number}
@@ -544,7 +578,6 @@ Code to perform image compression using SVD:
             u &= \frac{a}{\Vert a \Vert_2}
         \end{align*}
     \end{itemize}
-    \item 
 \end{itemize}
 
 \subsubsection*{Multi-linear Regression}
